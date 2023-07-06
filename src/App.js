@@ -14,19 +14,12 @@ function App() {
   return (
     <>
     <div className="App">
-    <EditCourse />
-      <AddCourse />
-      <AddCategory />
-      <Register />
-      <Signin />
-      <Phone />
-      <Category />
-      <Cardmotif />
+
     </div>
     <Routes>
       <Route path="/register" exact element={<Register />}/>
       <Route path="/login" exact element={<Signin />}/>
-      <Route path="/accacteg" exact element={<AddCategory />}/>
+      <Route path="/addcteg" exact element={<AddCategory />}/>
       <Route path="/addcourse" exact element={<AddCourse />}/>
       <Route path="/editcourse" exact element={<EditCourse />}/>
       <Route path="/categ" exact element={<Category />}/>
