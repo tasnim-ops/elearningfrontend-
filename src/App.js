@@ -28,7 +28,7 @@ hello!!
       <Route path="/admin/login" exact element={<AdminSignin />}/>
       <Route path="/user/profile" exact element={<Profile  />}/>
       <Route path="/user/editprofile" exact element={<EditProfile  />}/>
-      <Route path="/editcateg" exact element={<EditCategory  />}/>
+      <Route path="/editcateg" exact element={<EditCategory />}/>
 
     </Routes>
     </>
