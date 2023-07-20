@@ -1,52 +1,46 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Typography from '@mui/material/Typography';
-import { useDispatch, useSelector } from 'react-redux';
 import { createCategory } from '../../features/categorySlice';
-import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
+import Alert from 'react-bootstrap/Alert';
 const AddCategory = () => {
+  const navigate=useNavigate();
   const [validated, setValidated] = useState(false);
-  const [categname, setCategname] = useState('');
-  const [categimage, setCategimage] = useState('');
+  const [name_categ, setName_categ] = useState('');
+  const [photo, setPhoto] = useState(null);
   const dispatch = useDispatch();
-  const { isLoading } = useSelector((state) => state.category);
 
-  useEffect(() => {
-    dispatch(createCategory);
-  }, [dispatch]);
-
-  const handleAjout = (event) => {
+  const handleAdd = (event) => {
     event.preventDefault();
+    event.stopPropagation();
+
     const form = event.currentTarget;
 
-    if (form.checkValidity() === true) {
-      const category = {
-        categname: categname,
-        categimage: categimage
-      };
+    if (form.checkValidity()) {
+      const formData = new FormData();
+      formData.append('name_categ', name_categ);
+      formData.append('photo', photo);
 
-      axios
-        .post('http://127.0.0.1:8000/api/categ/', category, {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-          }
-        })
-        .then((response) => {
-          // Handle the response
-          console.log('Category created:', response.data);
-          setCategname('');
-          setCategimage('');
-          setValidated(false);
+      dispatch(createCategory(formData))
+        .then((res) => {
+          console.log('insert OK', res);
+          setName_categ('');
+          setPhoto(null);
+          return(
+            <Alert  variant='success'>
+            Added with success
+          </Alert>
+          )
+          navigate("/categ")
         })
         .catch((error) => {
-          // Handle any errors
-          console.error('Error creating category:', error);
-          alert('Error! Could not insert category.');
+          console.log(error.response);
+          alert('Error! Cannot connect');
         });
     }
 
@@ -57,17 +51,35 @@ const AddCategory = () => {
     <div className="container justify-content-center">
       <React.Fragment>
         <div>
-          <Form className="border p-4" style={{ backgroundColor: '#b9dada' }} noValidate validated={validated} onSubmit={handleAjout}>
+          <Form
+            className="border p-4"
+            style={{ backgroundColor: '#b9dada' }}
+            noValidate
+            validated={validated}
+            onSubmit={handleAdd}
+          >
             <Typography variant="h5">Add new category</Typography>
             <Row className="mb-3 justify-content-center">
               <Form.Group as={Col} md="5">
-                <Form.Control required type="text" placeholder="name" value={categname} onChange={(e) => setCategname(e.target.value)} />
+                <Form.Control
+                  required
+                  type="text"
+                  placeholder="name"
+                  value={name_categ}
+                  onChange={(e) => setName_categ(e.target.value)}
+                />
               </Form.Group>
               <Form.Group controlId="formFileSm" as={Col} md="5">
-                <Form.Control required type="file" accept="image/" onChange={(e) => setCategimage(e.target.files[0])} />
+                <Form.Control
+                  required
+                  type="file"
+                  onChange={(e) => setPhoto(e.target.files[0])}
+                />
               </Form.Group>
             </Row>
-            <Button type="submit" variant="success">Save</Button>
+            <Button type="submit" variant="success">
+              Save
+            </Button>
           </Form>
         </div>
       </React.Fragment>

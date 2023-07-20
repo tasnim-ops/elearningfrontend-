@@ -3,9 +3,9 @@ import {addCategory,delCategotegory,editCategory,fetchCategories,fetchCategoryBy
 
 
 export const getCategories=createAsyncThunk(
-    "category/getCategory",
-    async(_,thunkApi)=>{
-        const {rejectWithValue}=thunkApi;
+    "category/getCategories",
+    async(_,thunkAPI)=>{
+        const {rejectWithValue}=thunkAPI;
         try{
             const res = await fetchCategories();
             return res.data;
@@ -89,7 +89,7 @@ export const categorySlice = createSlice({
         })
         .addCase(getCategories.rejected,(state,action)=>{
             state.isLoading=false;
-            console.log("impossible de se connecter au serveur")
+            console.log("Can not connect to server")
         })
 
         //insert category
@@ -118,7 +118,7 @@ export const categorySlice = createSlice({
         })
         .addCase(updateCategory.fulfilled,(state,action)=>{
             state.categories=state.categories.map((item)=>
-            item._id===action.payload? action.payload : item
+            item._id === action.payload._id ? action.payload : item
             );    
             state.isLoading=false;
             state.error=null;

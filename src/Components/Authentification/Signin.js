@@ -10,6 +10,7 @@ import {
   MDBInput,
 }
 from 'mdb-react-ui-kit';
+import { Link } from 'react-router-dom';
 const Signin = () => {
   return (
     <div>
@@ -20,21 +21,27 @@ const Signin = () => {
         <MDBCardImage src='https://res.cloudinary.com/ddbiyenrd/image/upload/v1687873429/_x_formation-e-learning_xxnqtp.jpg' className='w-100 rounded-top'  alt="Sample photo"/>
         <MDBCardBody className='px-5'>
         <h3 className="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2">Login</h3>
-
-
-
-
-
     <MDBInput wrapperClass='mb-4' label='Email' id='form1' type='email'/>
     <MDBInput wrapperClass='mb-4' label='Password' id='form1' type='password'/>
 
 
     <MDBBtn color='success' className='mb-4' size='lg'>Login</MDBBtn>
-
+    <MDBRow>
+      <MDBCol md='6'>
+        <h6>Don't have an account ? <Link to='/user/register'>Register</Link></h6>      
+      </MDBCol>
+      <MDBCol md='6'>
+        <h6 style={{color:'#ff2300'}}>Forgot your password ? <Link to=''>Refresh</Link></h6>      
+      </MDBCol>
+    </MDBRow>
 </MDBCardBody>
 </MDBCard>
 </MDBCol >
+
+
 </MDBRow>
+
+
 </MDBContainer>
     </div>
   )

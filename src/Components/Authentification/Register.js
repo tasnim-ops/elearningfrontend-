@@ -11,6 +11,7 @@ import {
   MDBRadio
 }
 from 'mdb-react-ui-kit';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
 
@@ -59,7 +60,11 @@ const Register = () => {
       </MDBCol>
     </MDBRow>
     <MDBBtn color='success' className='mb-4' size='lg'>Submit</MDBBtn>
-
+    <MDBRow>
+      <MDBCol md='6'>
+        <h6>Already have an account ? <Link to='/user/login'>Login</Link></h6>      
+      </MDBCol>
+    </MDBRow>
 </MDBCardBody>
 </MDBCard>
 </MDBCol >

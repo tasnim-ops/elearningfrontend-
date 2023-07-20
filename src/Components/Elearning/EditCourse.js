@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Typography from '@mui/material/Typography';
+import DeleteConfirmation from './DeleteConfirmation';
 const EditCourse = () => {
   return (
     <div  className="container  justify-content-center" >
