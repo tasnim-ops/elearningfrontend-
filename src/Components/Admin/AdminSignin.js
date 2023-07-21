@@ -3,6 +3,14 @@ import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox } f
 import { Link } from 'react-router-dom';
 
 const AdminSignin = () => {
+  const handleSubmit=(event)=>{
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log({
+      email: data.get('email'),
+      password:data.get('password'),
+    });
+  };
   return (
     <div>
 <MDBContainer fluid className="p-3 my-5 h-custom border p-3">
@@ -12,7 +20,7 @@ const AdminSignin = () => {
   </MDBCol>
 
   <MDBCol col='4' md='6'>
-  <form>
+  <form  >
     <div className="container border p-3">
 
       <div className="row mt-2">
@@ -23,7 +31,7 @@ const AdminSignin = () => {
           <input className="form-control" type="password" id="password" name="password" placeholder="Password" required />
         </div>
       </div>
-      <button className="btn" style={{ backgroundColor: "#2a969c" }}>Login</button>
+      <button className="btn" type='submit' onSubmit={handleSubmit} style={{ backgroundColor: "#2a969c" }}>Login</button>
       <div className="row mt-2">
       <div className="col-sm-6 mb-2">
         <p><h6 >Don't have an account ? <Link to="/admin/register"  >Register</Link></h6></p>
