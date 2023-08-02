@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -9,46 +9,35 @@ import { createCategory } from '../../features/categorySlice';
 import { useNavigate } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 const AddCategory = () => {
-  const navigate=useNavigate();
   const [validated, setValidated] = useState(false);
   const [name_categ, setName_categ] = useState('');
   const [photo, setPhoto] = useState(null);
   const dispatch = useDispatch();
+  
+  const success = useSelector((state) => state.category.success);
+  const error = useSelector((state) => state.category.error);
 
   const handleAdd = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
     const form = event.currentTarget;
+    setValidated(true);
 
     if (form.checkValidity()) {
       const formData = new FormData();
       formData.append('name_categ', name_categ);
       formData.append('photo', photo);
 
-      dispatch(createCategory(formData))
-        .then((res) => {
-          console.log('insert OK', res);
-          setName_categ('');
-          setPhoto(null);
-          return(
-            <Alert  variant='success'>
-            Added with success
-          </Alert>
-          )
-          navigate("/categ")
-        })
-        .catch((error) => {
-          console.log(error.response);
-          alert('Error! Cannot connect');
-        });
+      dispatch(createCategory(formData));
     }
-
-    setValidated(true);
   };
 
+  
+
+  
   return (
-    <div className="container justify-content-center">
+<div className="container justify-content-center">
       <React.Fragment>
         <div>
           <Form
@@ -77,10 +66,24 @@ const AddCategory = () => {
                 />
               </Form.Group>
             </Row>
+            
             <Button type="submit" variant="success">
               Save
             </Button>
+            <Button variant="warning">
+              Cancle
+            </Button>
           </Form>
+          {success && (
+            <Alert variant="success" className="mt-3">
+              Added with success
+            </Alert>
+          )}
+          {error && (
+            <Alert variant="danger" className="mt-3">
+              Error! Already exist
+            </Alert>
+          )}
         </div>
       </React.Fragment>
     </div>

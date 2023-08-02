@@ -1,3 +1,70 @@
-.mylinks{
-color:aliceblue;
+/* Assuming this is your CSS file */
+
+.mylinks {
+  color: aliceblue;
+}
+
+.iconstyle {
+  color: black;
+}
+
+.custom-section {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.custom-text {
+  font-family: 'YourCustomFont', cursive, 'Arial', 'Helvetica', sans-serif;
+}
+
+.test_title {
+  font-family: 'Monoton', cursive;
+  font-size: 3rem;
+  color: #c6743d;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.paragraph-style {
+  width: 100%; /* Adjust the width as needed */
+  font-size: 18px;
+  /*font-weight: bold;*/
+  color: #333;
+  text-align: center;
+  padding: 20px;
+  /*background-color: #51aca9;*/
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ImageWithTextOverlay.css */
+.image-container {
+  position: relative;
+}
+
+.test_click {
+  /* Add any styles for the image if needed */
+  width: 100%;
+  height: auto;
+}
+
+.overlay-text {
+
+
+
+  background-color: rgba(0, 0, 0, 0);
+  color: rgb(15, 174, 202);
+  padding: 10px;
+  font-size: 22px;
+}
+
+/* Media query for small screens */
+@media screen and (max-width: 768px) {
+  .overlay-text {
+    top: 70%; /* Adjust the value to position the text higher or lower */
+    font-size: 18px; /* Adjust the font size as needed */
+  }
 }

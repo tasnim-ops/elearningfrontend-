@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox } from 'mdb-react-ui-kit';
 import { Link, useNavigate } from 'react-router-dom';
 import AdminSignin from './AdminSignin';
 import { useDispatch, useSelector } from 'react-redux';
-import { register } from '../../features/authSlice'; 
+import { register, reset } from '../../features/authSlice'; 
+import Alert from 'react-bootstrap/Alert';
+
 const AdminRegister = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch();
@@ -13,41 +15,83 @@ const AdminRegister = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState(""); 
   const [phone,setPhone]=useState("");
+  const[role,setRole]=useState('admin');
+  const [validated, setValidated] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const {user,isSuccess, isError,errorMessage} =useSelector((state) => state.auth);
 
-  const {user,isSuccess, isError} =useSelector((state) => state.auth);
-  
   const handleSubmit=(event) =>{
     event.preventDefault();
     event.stopPropagation();
     const form = event.currentTarget;
-    const adminData= {
-      email,
-      password,
-      firstname,
-      lastname,
-      phone,
+    if (form.checkValidity()){
+      const formData = new FormData();
+      formData.append('firstname', firstname);
+      formData.append('lastname', lastname);
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('phone', phone);
+      formData.append('role',role)
+      dispatch(register(formData))
+      .then((res)=>{
+        console.log('registred', res);
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setPhone('');
+        setPassword('');
+        setShowAlert(true);
+      })
+      .catch((error)=>{
+        if (error.response && error.response.data && error.response.data.errors) {
+          // Set the error messages from the backend response
+          setShowAlert(true);
+        }
+      });
     }
-    dispatch(register(adminData))
-    .unwrap().then(()=>{
-      navigate('/admin/login');
-    })
-    .catch((error)=>{
-      //handle any error that occured during registration
-      console.log(error);
-    })
-  
+  setValidated(true);
 }
+
+useEffect(() => {
+  if (isSuccess) {
+    navigate('/admin/login')
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setPhone('');
+    setPassword('');
+  }
+}, [isSuccess]);
+useEffect(() => {
+  if (isError) {
+    // Show the alert when there's an error
+    setShowAlert(true);
+  }
+}, [isError]);
+
+
   return (
     <>
       <MDBContainer fluid className="p-3 my-5 h-custom border p-3">
-
+      {showAlert && (
+          <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>
+            <Alert.Heading>Error!</Alert.Heading>
+            {errorMessage && Object.entries(errorMessage).map(([key, messages], index) => (
+              <div key={index}>
+                {messages.map((message, messageIndex) => (
+                  <p key={messageIndex}>{`${key}: ${message}`}</p>
+                ))}
+              </div>
+            ))}
+          </Alert>
+        )}
       
       <MDBRow>
         <MDBCol col='10' md='6'>
           <img src="https://res.cloudinary.com/ddbiyenrd/image/upload/v1688836520/admin_me4w4l.jpg" className='img-fluid ' alt='admin' />
         </MDBCol>
         <MDBCol col='4' md='6'   >
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} >
           <div className="container border p-3">
             <div className="row mt-2">
               <div className="col-sm-6 mb-2">

@@ -16,14 +16,15 @@ import { Link } from 'react-router-dom';
 const Register = () => {
 
   return (
-    <div>
- <MDBContainer fluid>
+    <div className='container'>
+ <MDBContainer className='container' >
     <MDBRow className='d-flex justify-content-center align-items-center'>
       <MDBCol lg='8'>
-        <MDBCard className='my-5 rounded-3' style={{maxWidth: '600px'}}>
-        <MDBCardImage src='https://res.cloudinary.com/ddbiyenrd/image/upload/v1687873429/_x_formation-e-learning_xxnqtp.jpg' className='w-100 rounded-top'  alt="Sample photo"/>
+        <MDBCard className='my-5 rounded-3 container' style={{maxWidth: '600px'}}>
+        <MDBCardImage src='https://res.cloudinary.com/ddbiyenrd/image/upload/v1690473888/register_3456388_mbcpzf.png' className='w-100 rounded-top'  alt="Sample photo"/>
         <MDBCardBody className='px-5'>
-        <h3 className="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2">Registration Info</h3>
+        <h3  className="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2  " style={{"text-align":'center' , 'color':'#003b36'}}>Registration Info</h3>
+
 
       <MDBRow>
         <MDBCol md='6'>
@@ -44,7 +45,7 @@ const Register = () => {
 
 
           <MDBCol md='6'>
-            <MDBRadio name='inlineRadio' id='inlineRadio1' value='option1' label='Teacher' inline />
+            <MDBRadio name='inlineRadio' id='inlineRadio1' value='option1' label='Teacher' inline checked />
             <MDBRadio name='inlineRadio' id='inlineRadio2' value='option2' label='Student' inline />
           </MDBCol>
 
@@ -59,9 +60,9 @@ const Register = () => {
         <MDBInput wrapperClass='mb-4' label='Repeat your password' size='lg' id='form5' type='password'/>
       </MDBCol>
     </MDBRow>
-    <MDBBtn color='success' className='mb-4' size='lg'>Submit</MDBBtn>
+    <button  style={{'backgroundColor':'#1794bb ', 'color':'#ffffff' }} className='mb-4 ripple ripple-surface ripple-surface-light btn btn-lg mb-4' size='lg'>Submit</button>
     <MDBRow>
-      <MDBCol md='6'>
+      <MDBCol md='8'>
         <h6>Already have an account ? <Link to='/user/login'>Login</Link></h6>      
       </MDBCol>
     </MDBRow>

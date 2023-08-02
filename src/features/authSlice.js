@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
-import {signin, signup} from '../Services/Authservice';
+//import {signin, signup} from '../Services/Authservice';
+import Api from "../Axios/Api";
 
 export const register = createAsyncThunk(
     "auth/register",
     async(user,thunkAPI)=>{
         const {rejectWithValue}=thunkAPI;
         try{
-            const res = await signup(user);
+            const res = await Api.post("/register",user);
             return res.data
         }catch( error){
             return rejectWithValue(error.message);
@@ -15,15 +16,26 @@ export const register = createAsyncThunk(
 );
 export const login = createAsyncThunk(
     "auth/login",
-    async(user, thunkAPI)=>{
-        try{
-            const res= await signin(user);
+    async (user, thunkAPI) => {
+        try {
+            console.log("Before API Call");
+            const res = await Api.post("/login", user);
+            console.log("After API Call");
+            const token = res.data.authorization.token;
+            console.log("Token:", token); 
+            localStorage.setItem("CC_Token", token);
             return res.data;
-        }catch(error){
-            return thunkAPI.rejectWithValue();
+        } catch (error) {
+            console.error("Error during API Call:", error);
+            return thunkAPI.rejectWithValue(error.message);
         }
     }
 );
+
+
+
+
+
 export const logout = createAsyncThunk(
     "auth/logout",
      () => {
@@ -77,7 +89,8 @@ export const authSlice= createSlice({
         .addCase(login.fulfilled, (state, action) => {
             state.isLoggedIn = true;
             state.user = action.payload.user;
-            localStorage.setItem("CC_Token",action.payload.token)
+            console.log(action.payload.authorization.token);
+            localStorage.setItem("CC_Token",action.payload.authorization.token)
         })
         .addCase(login.rejected, (state, action) => {
             state.isLoggedIn = false;

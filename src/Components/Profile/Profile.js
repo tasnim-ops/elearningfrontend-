@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
-
+import '../style.css'
 const Profile = () => {
   const navigate = useNavigate();
   const handleNavigation = () => {
@@ -19,7 +19,9 @@ const Profile = () => {
                     alt="Avatar" />                    
                     <h4>Name</h4>
                     <p>profession</p>
+                    <a href='/user/editprofile'>
                     <i class="far fa-edit mb-5"></i>
+                    </a>
                   </div>
                 <div className='col-md-8'>
                   <div className='card-body p-4'>
@@ -36,10 +38,9 @@ const Profile = () => {
                       </div>
                   </div>
                   <div className="d-flex justify-content-center">
-                  <a href="#!"><i className="fab fa-facebook-f fa-lg me-3"></i></a>
-                  <a href="#!"><i className="fab fa-twitter fa-lg me-3"></i></a>
-                  <a href="#!"><i className="fab fa-linkedin fa-lg me-3"></i></a>
-                  <a href="#!"><i className="fab fa-github fa-lg"></i></a>
+                  <a href="#!"><i className="fab fa-facebook-f fa-lg me-3 iconstyle"></i></a>
+                  <a href="#!"><i className="fab fa-linkedin fa-lg me-3 iconstyle"></i></a>
+                  <a href="#!"><i className="fab fa-github fa-lg iconstyle"></i></a>
                 </div>
                 <div className="d-flex justify-content-center">
                 <button type="button" class="btn btn-primary btn-rounded btn-lg ">

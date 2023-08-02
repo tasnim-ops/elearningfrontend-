@@ -5,12 +5,12 @@ const api = axios.create({
   withCredentials: false
 });
 
-// Ajoutez cette ligne pour intercepter les requêtes sortantes
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // Récupérer le token d'autorisation à partir du stockage local (vous pouvez ajuster cela en fonction de votre implémentation)
+    const token = localStorage.getItem('CC_Token');
+    console.log('Authorization Header:', config.headers.authorization); // Log the Authorization header
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // Ajouter le token d'autorisation à l'en-tête de la requête
+      config.headers.authorization = `Bearer ${token}`; 
     }
     return config;
   },
@@ -19,4 +19,6 @@ api.interceptors.request.use(
   }
 );
 
+
 export default api;
+ 

@@ -11,12 +11,18 @@ import AdminSignin from './Components/Admin/AdminSignin';
 import Profile from './Components/Profile/Profile';
 import EditProfile from './Components/Profile/EditProfile';
 import { EditCategory } from './Components/Elearning/EditCategory';
+import NavBarWel from './Components/Pages/NavBarWel';
+import ContactPage from './Components/Pages/ContactPage';
+import NavBarLog from './Components/Pages/NavBarLog';
+import { Teachers } from './Components/Profile/Teachers';
+import Welcome from './Components/Pages/Welcome';
+import HomePage from './Components/Pages/HomePage';
 
 
 function App() {
   return (
     <>
-hello!!
+<NavBarLog />
     <Routes>
       <Route path="user/register" exact element={<Register />}/>
       <Route path="user/login" exact element={<Signin />}/>
@@ -29,6 +35,9 @@ hello!!
       <Route path="/user/profile" exact element={<Profile  />}/>
       <Route path="/user/editprofile" exact element={<EditProfile  />}/>
       <Route path="/editcateg" exact element={<EditCategory />}/>
+      <Route path="/contact" exact element={<ContactPage />}/>
+      <Route path="/teachers" exact element={<Teachers />}/>
+      <Route path="/" exact element={<HomePage />}/>
 
     </Routes>
     </>

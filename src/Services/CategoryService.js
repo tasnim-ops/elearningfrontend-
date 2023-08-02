@@ -10,7 +10,7 @@ export const fetchCategoryById=async(categoryId)=>{
     return await Axios.get(Categ_Api + '/'+ categoryId);
 }
 
-export const delCategotegory=async(categoryId)=>{
+export const delCategory=async(categoryId)=>{
     return await Axios.delete(Categ_Api +'/'+ categoryId);
 }
 

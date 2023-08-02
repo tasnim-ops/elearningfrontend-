@@ -1,10 +1,9 @@
 import Api from "../Axios/Api";
-const USER_API="/admin"
 
-export const signup= async(user)=>{
-    return await Api.post(USER_API + "/register", user);
-}
+export const signup = async (admin) => {
+  return await Api.post("/register", admin);
+};
 
-export const signin =async(user)=>{
-    return await Api.post(USER_API + "/login", user);
-}
+export const signin = async (admin) => {
+  return await Api.post("/login", admin);
+};
