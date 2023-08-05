@@ -1,5 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import { addCategory, delCategory, editCategory, fetchCategories, fetchCategoryById } from "../Services/CategoryService";
+
+
 
 export const getCategories = createAsyncThunk(
   "category/getCategories",
@@ -33,6 +35,7 @@ export const deleteCategory = createAsyncThunk(
     const { rejectWithValue } = thunkAPI;
     try {
       await delCategory(id);
+      thunkAPI.dispatch(deleteCategorySuccess()); // Dispatch an action to set success to true
       return id;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -40,18 +43,21 @@ export const deleteCategory = createAsyncThunk(
   }
 );
 
+
 export const updateCategory = createAsyncThunk(
   "category/updateCategory",
   async (category, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
       const res = await editCategory(category);
+      thunkAPI.dispatch(updateCategorySuccess()); // Dispatch an action to set success to true
       return res.data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
 
 export const findCategoryById = createAsyncThunk(
   "category/findCategoryById",
@@ -74,6 +80,14 @@ export const categorySlice = createSlice({
     isLoading: false,
     success: null,
     error: null,
+  },
+  reducers: {
+     updateCategorySuccess: (state) => {
+      state.success = true;
+    },
+    deleteCategorySuccess: (state) => {
+      state.success = true;
+    },
   },
   extraReducers: (builder) => {
     // get categories
@@ -143,6 +157,7 @@ export const categorySlice = createSlice({
       .addCase(deleteCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+        state.success = false;
       })
 
       // fetch category
@@ -159,8 +174,10 @@ export const categorySlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
+
+;
       
   }
 });
-
+export const { updateCategorySuccess, deleteCategorySuccess } = categorySlice.actions;
 export default categorySlice.reducer;

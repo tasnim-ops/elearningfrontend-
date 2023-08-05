@@ -1,34 +1,30 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Row, Col, Modal, Button } from 'react-bootstrap';
-import Card from 'react-bootstrap/Card';
-import CardContent from '@mui/material/CardContent';
+import { Row, Col, Modal, Button ,Form, Card,Image,Alert} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCategories, updateCategory, deleteCategory, createCategory } from '../../features/categorySlice';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Form from 'react-bootstrap/Form';
+import { getCategories, updateCategory, deleteCategory, createCategory, deleteCategorySuccess, updateCategorySuccess } from '../../features/categorySlice';
 import { useNavigate } from 'react-router-dom';
-import Image from 'react-bootstrap/Image';
-import Alert from 'react-bootstrap/Alert';
+import CardContent from '@mui/material/CardContent';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 export const EditCategory = () => {
   
-  
   const dispatch = useDispatch();
   const { categories, isLoading, error ,success} = useSelector((state) => state.category);
-  useEffect(()=>{
-    dispatch(getCategories())
-  },[dispatch,success]);
-  const navigate = useNavigate();
- 
-
-
+  useEffect(() => {
+    document.body.style.backgroundColor = "#bfeae9"; 
+    dispatch(getCategories());
+    return () => {
+      document.body.style.backgroundColor = null;
+    };
+  }, [dispatch, success]);
                   /************************Deletion*******************************/
           const [confDeletion, setConfDeletion] = useState(false);
           const [showDeleteModal, setShowDeleteModal] = useState(false);
           const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+          const [showDeleteSuccessAlert, setShowDeleteSuccessAlert] = useState(false);
 
-          const handleShowDeleteModal = (id) => {
+          const çhandleShowDeleteModal = (id) => {
             setSelectedCategoryId(id);
             setShowDeleteModal(true);
           };
@@ -36,55 +32,61 @@ export const EditCategory = () => {
           const handleCloseDeleteModal = () => setShowDeleteModal(false);
 
           const handleDelecategory = (id) => {
-            setConfDeletion(false); // On désactive l'état de confirmation lors de l'ouverture du modal
-            handleShowDeleteModal(id);
+            setConfDeletion(false);
+            setSelectedCategoryId(id);
+            setShowDeleteModal(true);
           };
 
+          
           const handleDeleteConfirmed = () => {
             dispatch(deleteCategory(selectedCategoryId));
-            setSelectedCategoryId(null);
-            handleCloseDeleteModal();
+            setShowDeleteSuccessAlert(true);
             setTimeout(() => {
-              dispatch(getCategories());
-            }, 500);
+              setShowDeleteSuccessAlert(false);
+              handleCloseDeleteModal();
+              dispatch(deleteCategorySuccess());
+              dispatch(getCategories()); // Rafraîchir la liste après la suppression
+            }, 2000);
           };
+          
+        
 
 
                 /************************Editing*******************************/
-    // State for the input fields
-      const [name_categ, setName_categ] = useState('');
-      const [selectedFile, setSelectedFile] = useState(null);
-    // State for the category data to be edited
-      const [editCategory, setEditCategory] = useState(null);
-    // State for the modals
-      const [showEditModal, setShowEditModal] = useState(false);
-      const handleCloseEditModal = () => setShowEditModal(false);
-      const handleShowEditModal = () => setShowEditModal(true);
-    
-    // Ref for the form
-      const formRef = useRef(null);
+                const [name_categ, setName_categ] = useState('');
+                const [selectedFile, setSelectedFile] = useState(null);
+                const [editCategory, setEditCategory] = useState(null);
+                const [showEditModal, setShowEditModal] = useState(false);
+                const [showEditSuccessAlert, setShowEditSuccessAlert] = useState(false);
+                const [showEditErrorAlert, setShowEditErrorAlert] = useState(false);
+              
+                const handleCloseEditModal = () => setShowEditModal(false);
+                const handleShowEditModal = () => setShowEditModal(true);
+              
+                const formRef = useRef(null);
+
     // Function to handle edit icon click
-      const handleEditIconClick = (item) => {
-        if (item.id !== undefined) { // Check if the category ID is defined
-          setEditCategory(item);
-          setName_categ(item.name_categ);
-          setSelectedFile(null); // Reset the selectedFile state when opening the modal
-          handleShowEditModal();
-        } else {
-          console.error("Category ID is undefined.");
-        }
-      };
+    const handleEditIconClick = (item) => {
+      if (item.id !== undefined) {
+        setEditCategory(item);
+        setName_categ(item.name_categ);
+        setSelectedFile(null);
+        handleShowEditModal();
+      } else {
+        console.error("Category ID is undefined.");
+      }
+    };
+
     // Function to handle file input change
-    const handleFileChange = (event) => {
-      const file = event.target.files[0];
-      setSelectedFile(file);
-    }
+     const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
 
   // Function to handle form submission for editing
   const handleSaveChanges = () => {
     const form = formRef.current;
-    if (form && form.checkValidity() && editCategory && editCategory.id) { // Check if editCategory and its ID are defined
-      // Prepare the category data to update
+    if (form && form.checkValidity() && editCategory && editCategory.id) {
       const category = {
         id: editCategory.id,
         name_categ: name_categ,
@@ -92,11 +94,10 @@ export const EditCategory = () => {
       };
       dispatch(updateCategory(category)).then((res) => {
         console.log("modified successfully", res);
-        // Clear the input fields
         setName_categ("");
         setSelectedFile(null);
-        // Close the modal
         handleCloseEditModal();
+        dispatch(updateCategorySuccess());
       });
     } else {
       console.error("Invalid data or category ID is undefined.");
@@ -128,24 +129,34 @@ const handleAdd = (event) => {
     dispatch(createCategory(formData));
   }
 };
-const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
+  const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
   const [showAddErrorAlert, setShowAddErrorAlert] = useState(false);
-  const [showEditSuccessAlert, setShowEditSuccessAlert] = useState(false);
-  const [showEditErrorAlert, setShowEditErrorAlert] = useState(false);
-  const [showDeleteSuccessAlert, setShowDeleteSuccessAlert] = useState(false);
   const [showDeleteErrorAlert, setShowDeleteErrorAlert] = useState(false);
-
   useEffect(() => {
     if (success === true) {
       setShowEditSuccessAlert(true);
       setTimeout(() => {
         setShowEditSuccessAlert(false);
-      }, 2000); // Show the edit success alert for 2 seconds
+      }, 2000);
     } else if (success === false) {
       setShowEditErrorAlert(true);
       setTimeout(() => {
         setShowEditErrorAlert(false);
-      }, 2000); // Show the edit error alert for 2 seconds
+      }, 2000);
+    }
+  }, [success]);
+
+  useEffect(() => {
+    if (success === true) {
+      setShowDeleteSuccessAlert(true);
+      setTimeout(() => {
+        setShowDeleteSuccessAlert(false);
+      }, 2000);
+    } else if (success === false) {
+      setShowDeleteErrorAlert(true);
+      setTimeout(() => {
+        setShowDeleteErrorAlert(false);
+      }, 2000);
     }
   }, [success]);
 
@@ -163,19 +174,7 @@ const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
     }
   }, [success]);
 
-  useEffect(() => {
-    if (success === true) {
-      setShowDeleteSuccessAlert(true);
-      setTimeout(() => {
-        setShowDeleteSuccessAlert(false);
-      }, 2000); // Show the delete success alert for 2 seconds
-    } else if (success === false) {
-      setShowDeleteErrorAlert(true);
-      setTimeout(() => {
-        setShowDeleteErrorAlert(false);
-      }, 2000); // Show the delete error alert for 2 seconds
-    }
-  }, [success]);
+
   return (
     <>
       <div style={{ backgroundColor: "#bfeae9"}}>
@@ -204,26 +203,22 @@ const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
       </div>
   </div>
    {/* Deletion Modal  */}
-      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal} backdrop='static' keyboard={false}>
+      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal} backdrop='static' centered keyboard={false}>
         <Modal.Header closeButton>
           <Modal.Title> Warning !!</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             You are going to delete a category, are you sure?
-
-            {/* Delete Category Success Alert */}
             {showDeleteSuccessAlert && (
-              <Alert variant="success" className="mt-3">
-                Deleted successfully
-              </Alert>
-            )}
-
-            {/* Delete Category Error Alert */}
-            {showDeleteErrorAlert && (
-              <Alert variant="danger" className="mt-3">
-                Error! Could not delete category
-              </Alert>
-            )}
+          <Alert variant="success" className="mt-3">
+            Deleted successfully
+          </Alert>
+        )}
+        {showDeleteErrorAlert && (
+          <Alert variant="danger" className="mt-3">
+            Error! Cann not delete
+          </Alert>
+        )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='danger' onClick={handleDeleteConfirmed}>Delete</Button>
@@ -233,7 +228,7 @@ const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
       </Modal>
  
 {/* Editing Modal */}
-      <Modal show={showEditModal} onHide={handleCloseEditModal}>
+      <Modal show={showEditModal} onHide={handleCloseEditModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Editing</Modal.Title>
         </Modal.Header>
@@ -250,20 +245,18 @@ const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
                 <img src={editCategory && editCategory.photo} alt={editCategory && editCategory.name_categ} style={{ width: "100%", height: "auto" }} />
               )}
             </Form.Group>
+            {showEditSuccessAlert && (
+            <Alert variant="success" className="mt-3">
+              Modified successfully
+            </Alert>
+          )}
 
-              {/* Edit Category Success Alert */}
-              {showEditSuccessAlert && (
-                <Alert variant="success" className="mt-3">
-                  Modified successfully
-                </Alert>
-              )}
-
-              {/* Edit Category Error Alert */}
-              {showEditErrorAlert && (
-                <Alert variant="danger" className="mt-3">
-                  Error! Could not modify category
-                </Alert>
-              )}
+          {/* Edit Category Error Alert */}
+          {showEditErrorAlert && (
+            <Alert variant="danger" className="mt-3">
+              Error! Could not modify category
+            </Alert>
+          )}
           </Modal.Body>
         <Modal.Footer>
           <Button variant='secondary' onClick={handleCloseEditModal}>Close</Button>
@@ -273,7 +266,7 @@ const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
 
       </Modal>
   {/* Add Modal */}
-          <Modal show={showAddModal} onHide={handleCloseAddModal}>
+          <Modal show={showAddModal} onHide={handleCloseAddModal} centered>
             <Modal.Header closeButton>
               <Modal.Title>Add new category </Modal.Title>
             </Modal.Header>
@@ -299,7 +292,7 @@ const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
                   onChange={(e) => setPhoto(e.target.files[0])}
                 />
               </Form.Group>
-                      {/* Add Category Success Alert */}
+        {/* Add Category Success Alert */}
         {showAddSuccessAlert && (
           <Alert variant="success" className="mt-3">
             Added with success
@@ -309,7 +302,7 @@ const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
         {/* Add Category Error Alert */}
         {showAddErrorAlert && (
           <Alert variant="danger" className="mt-3">
-            Error! Could not add category
+            Error! Already exist
           </Alert>
         )}
             </Modal.Body>
@@ -327,6 +320,8 @@ const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
           </Modal>
           
 
+
+       
 
     </>
   )
