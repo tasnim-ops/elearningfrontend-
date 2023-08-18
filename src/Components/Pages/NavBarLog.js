@@ -17,7 +17,7 @@ const NavBarLog = () => {
     {'namepage':'ABOUT','linkto':'/about'},
     {'namepage':'CONTACT','linkto':'/contact'},
     {'namepage':'Categories','linkto':'/editcateg'},
-    {'namepage':'Courses','linkto':'/courses'},
+    {'namepage':'Courses','linkto':'/addcourse'},
     {'namepage':'Teachers','linkto':'/teachers'}];
     
 const settings = [{'option':'Profile','linkto':'/user/profile'},   

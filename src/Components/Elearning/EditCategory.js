@@ -85,6 +85,8 @@ export const EditCategory = () => {
 
   // Function to handle form submission for editing
   const handleSaveChanges = () => {
+    console.log("Attempting to save changes...");
+    
     const form = formRef.current;
     if (form && form.checkValidity() && editCategory && editCategory.id) {
       const category = {
@@ -92,8 +94,10 @@ export const EditCategory = () => {
         name_categ: name_categ,
         photo: selectedFile ? URL.createObjectURL(selectedFile) : editCategory.photo,
       };
+      console.log("Updating category:", category);
+  
       dispatch(updateCategory(category)).then((res) => {
-        console.log("modified successfully", res);
+        console.log("Update response:", res);
         setName_categ("");
         setSelectedFile(null);
         handleCloseEditModal();
@@ -103,7 +107,6 @@ export const EditCategory = () => {
       console.error("Invalid data or category ID is undefined.");
     }
   };
-
 /************************Adding*******************************/
 
 const [validated, setValidated] = useState(false);
@@ -118,6 +121,8 @@ const handleAdd = (event) => {
   event.preventDefault();
   event.stopPropagation();
 
+  console.log("Attempting to add new category...");
+
   const form = event.currentTarget;
   setValidated(true);
 
@@ -126,9 +131,12 @@ const handleAdd = (event) => {
     formData.append('name_categ', name_categ);
     formData.append('photo', photo);
 
+    console.log("New category data:", formData);
+
     dispatch(createCategory(formData));
   }
 };
+
   const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
   const [showAddErrorAlert, setShowAddErrorAlert] = useState(false);
   const [showDeleteErrorAlert, setShowDeleteErrorAlert] = useState(false);
@@ -166,6 +174,7 @@ const handleAdd = (event) => {
       setTimeout(() => {
         setShowAddSuccessAlert(false);
       }, 2000); // Show the add success alert for 2 seconds
+    
     } else if (success === false) {
       setShowAddErrorAlert(true);
       setTimeout(() => {
@@ -208,7 +217,7 @@ const handleAdd = (event) => {
           <Modal.Title> Warning !!</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            You are going to delete a category, are you sure?
+        Are you sure you want to delete this category? Doing so will result in the deletion of all corresponding courses under the category {name_categ}
             {showDeleteSuccessAlert && (
           <Alert variant="success" className="mt-3">
             Deleted successfully

@@ -53,7 +53,8 @@ export const updateCategory = createAsyncThunk(
       thunkAPI.dispatch(updateCategorySuccess()); // Dispatch an action to set success to true
       return res.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      console.error("An error occurred while updating the category:", error);
+      throw error; // Rethrow the error to be caught by the caller
     }
   }
 );

@@ -6,6 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { createCourse, deleteCourse, deleteCourseSuccess, getCourses, updateCourse, updateCourseSuccess } from '../../features/courseSlice';
+import{getTeachers,findTeacherByID} from '../../features/teacherSlice'
 import { getCategories } from '../../features/categorySlice';
 import Box from '@mui/material/Box';
 const AddCourse = () => {
@@ -13,10 +14,14 @@ const AddCourse = () => {
   const dispatch = useDispatch();
   const { courses, isLoadingCourse, errorCourse ,successCourse} = useSelector((state) => state.course);
   const { categories, isLoading, error ,success} = useSelector((state) => state.category);
+  const { teachers} = useSelector((state) => state.teacher);
+
   useEffect(() => {
     document.body.style.backgroundColor = "#bfeae9"; 
     dispatch(getCourses());
     dispatch(getCategories());
+    dispatch(getTeachers());
+
 
     return () => {
       document.body.style.backgroundColor = null;
@@ -26,7 +31,7 @@ const AddCourse = () => {
                   /************************Deletion*******************************/
                   const [confDeletion, setConfDeletion] = useState(false);
                   const [showDeleteModal, setShowDeleteModal] = useState(false);
-                  const [selectedCourseId, setSelectedCourseId] = useState(null);
+                  const [selectedCourseId, setSelectedCourseId] = useState('');
                   const [showDeleteSuccessAlert, setShowDeleteSuccessAlert] = useState(false);
 
                   const handleShowDeleteModal = (id) => {
@@ -56,9 +61,9 @@ const AddCourse = () => {
                 /************************Editing*******************************/
                 const [title, setTitle] = useState('');
                 const [selectedFile, setSelectedFile] = useState(null);
-                const [course_description, setCourse_description] = useState(null);
+                const [course_course_description, setCourse_course_description] = useState(null);
                 const [showEditModal, setShowEditModal] = useState(false);
-                const [price, setPrice] = useState(null);
+                const [price, setPrice] = useState('');
 
                 const [editCourse, setEditCourse] = useState(null);
 
@@ -114,28 +119,54 @@ const AddCourse = () => {
 
                 const [validated, setValidated] = useState(false);
                 const [showAddModal, setShowAddModal]=useState(false);
-                const handleCloseAddModal = () => setShowAddModal(false);
-                const handleSetShowModal=()=>setShowAddModal(true);
-                const [documents, setDocuments] = useState(null);
+                const handleClear =()=>{
+                  setDescription('');
+                  setPrice('');
+                  setTitle('');
+                  setTeacher_id('');
+                  setSelectedFiles([]);
+                  
+                }
+                const handleCloseAddModal = () => {setShowAddModal(false);
+                  handleClear();
+                };
+                const handleSetShowModal=(id)=>setShowAddModal(true,id);
+                const [selectedFiles, setSelectedFiles] = useState([]);
+                const [category_id,setCategory_id]=useState('');
+                const [teacher_id,setTeacher_id]=useState('');
 
-                const handleAddCourse =()=>{
-                  handleSetShowModal();
+                const[course_description,setDescription]=useState('');
+                const handleAddCourse =(id)=>{
+                  handleSetShowModal(id);
+                  setCategory_id(id); 
                 }
                 const handleAdd = (event) => {
                   event.preventDefault();
                   event.stopPropagation();
-
+                
                   const form = event.currentTarget;
                   setValidated(true);
-
+                
                   if (form.checkValidity()) {
                     const formData = new FormData();
                     formData.append('title', title);
-                    formData.append('documents', documents);
-
+                    formData.append('price', price);
+                    formData.append('course_description', course_description);
+                    formData.append('category_id', category_id);
+                    formData.append('teacher_id', teacher_id);
+                
+                    // Append each file to the 'documents[]' array
+                    selectedFiles.forEach((file, index) => {
+                      formData.append(`documents[${index}]`, file);
+                    });
+                
                     dispatch(createCourse(formData));
+
                   }
+
                 };
+                
+                
                 const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
                 const [showAddErrorAlert, setShowAddErrorAlert] = useState(false);
                 const [showDeleteErrorAlert, setShowDeleteErrorAlert] = useState(false);
@@ -168,22 +199,25 @@ const AddCourse = () => {
                   }
                 }, [success]);
                 useEffect(() => {
-                  if (success === true) {
+                  if (successCourse === true) {
                     setShowAddSuccessAlert(true);
                     setTimeout(() => {
                       setShowAddSuccessAlert(false);
-                    }, 2000); // Show the add success alert for 2 seconds
-                  } else if (success === false) {
+                    }, 3000); 
+                    handleClear();
+
+                  } else if (successCourse === false) {
                     setShowAddErrorAlert(true);
                     setTimeout(() => {
                       setShowAddErrorAlert(false);
                     }, 2000); // Show the add error alert for 2 seconds
                   }
-                }, [success]);
+                }, [successCourse]);
               
   return (
 
 <>  
+<Typography variant="h4" align="center" mb={2}  style={{ color: "#2a969c"}}>Courses handeling</Typography>
 {categories.map((categ) => {
   const categoryCourses = courses.filter((course) => course.category_id === categ.id);
 
@@ -193,40 +227,53 @@ const AddCourse = () => {
 
   return (
     <div key={categ.id}>
-      <Box
-        className='container-fluid'
-        sx={{
-          width: 300,
-          height: 100,
-          backgroundColor: '#7df9ff',
-          '&:hover': {
-            backgroundColor: 'info.main',
-            opacity: [0.9, 0.8, 0.7],
-          },
-        }}
-      >
-        {categ.name_categ}
-      </Box>
+    <Box
+  className='container-fluid'
+  sx={{
+    width: '100%',
+    height: '50px',
+    backgroundColor: '#dcd6cf',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    borderRadius: '5px',
+    transition: 'background-color 0.3s',
+    '&:hover': {
+      backgroundColor: '#4c9393',
+      opacity: 0.9,
+    },
+  }}
+>
+  <Typography variant="h6" sx={{ color: 'white' }}>
+    {categ.name_categ}
+  </Typography>
+</Box>
+
       <div style={{ backgroundColor: "#bfeae9" }}>
         <div className='container' style={{'display': 'flex', 'justifyContent':'flex-end' }}>
-          <button type="button" style={{ color: '#194E6B', textDecoration: 'none', 'backgroundColor':'#4c9393'}} className="btn" onClick={() => handleAddCourse()}>new course</button>
+          <button type="button" style={{ color: '#194E6B', textDecoration: 'none', 'backgroundColor':'#4c9393'}} className="btn" onClick={() => handleAddCourse(categ.id)}>new {categ.name_categ} course</button>
         </div>
         <div className="justify-content-center align-items-center" style={{ backgroundColor: '#bfeae9', padding: '20px' }}>
           <Row className="justify-content-center align-items-center">
             {categoryCourses.map((course) => (
-              <Col key={course.id} sm={12} md={10} lg={6} xl={4} className="mb-5"  style={{ width: '18rem' }}>
-                <Card >
+              <Col key={course.id} sm={12} md={10} lg={6} xl={4} className="mb-5"  style={{ width: '22rem','height':700}}>
+                <div className='card' sx={{maxWidth:650, height:900}} >
+                  <CardContent style={{'height':'80px'}}>
+                    <Typography color="text.primary"  >{course.title}</Typography>
+                  </CardContent>
+                  <CardContent sx={{height:'90px'}} className='mt-3' >
+                    <Typography  variant="body2" color="text.secondary"  >{course.course_description}</Typography>
+                  </CardContent>
                   <CardContent>
-                    <Card.Title style={{ textAlign: 'center' ,color:'#ff5722'}}>{course.title}</Card.Title>
-                  </CardContent>          
-                  <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative', 'padding':'2px' }}>
-                    <Image src={categ.photo} rounded style={{ width: '100%', maxHeight: '100%', objectFit: 'cover', position: 'relative', top: 0, left: 0 }} />
-                  </div>
+                      <div style={{ height: '250px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative', 'padding':'2px' }}>
+                        <Image src={categ.photo} rounded style={{ width: '100%', maxHeight: '100%', objectFit: 'cover', position: 'relative', top: 0, left: 0 }} />
+                      </div></CardContent>
                   <CardContent>
                     <EditIcon type='button' onClick={() => handleEditIconClick(course)} style={{ position: 'relative', left: '80%' }} />
                     <DeleteIcon type='button' onClick={() => handleDelecourse(course.id)} />
                   </CardContent>
-                </Card>
+                </div>
               </Col>
             ))}
           </Row>
@@ -271,12 +318,15 @@ const AddCourse = () => {
             <Form.Group className='mb-3' controlId='exempleForm.ControlInput1'>
               <Form.Label>Course name</Form.Label>
               <Form.Control type="text" required autoFocus value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Form.Label>Course description</Form.Label>
+              <Form.Control type="text" required autoFocus value={course_description} onChange={(e) => setDescription(e.target.value)} />
+
               <Form.Label>Documents</Form.Label>
               <Form.Control type="file" onChange={handleFileChange} />
               {selectedFile ? (
-                <img src={URL.createObjectURL(selectedFile)} alt={selectedFile.name} style={{ width: "100%", height: "auto" }} />
+                <p>{selectedFile.name}</p>
               ) : (
-                <img src={editCourse && editCourse.photo} alt={editCourse && editCourse.title} style={{ width: "100%", height: "auto" }} />
+                <p></p>
               )}
             </Form.Group>
             {showEditSuccessAlert && (
@@ -302,7 +352,7 @@ const AddCourse = () => {
 
         {/* Add Modal */}
         <Modal show={showAddModal} onHide={handleCloseAddModal} centered>
-            <Modal.Header closeButton>
+            <Modal.Header closeButton onClick={handleCloseAddModal}>
               <Modal.Title>Add new course </Modal.Title>
             </Modal.Header>
             <Form
@@ -311,30 +361,72 @@ const AddCourse = () => {
               onSubmit={handleAdd}
             >
             <Modal.Body>
-              <Form.Group  md="5">
+              <Form.Group  md="5" className="mb-2">
                 <Form.Control
                   required
                   type="text"
-                  placeholder="name"
+                  placeholder="title"
+                  maxLength="100"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </Form.Group>
+              <Form.Group  md="5" className="mb-2">
+                <Form.Control
+                  required
+                  type="text"
+                  placeholder="course_description"
+                  maxLength="200"
+                  value={course_description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group  md="5" className="mb-2">
+                <Form.Control
+                  required
+                  type="number"
+                  placeholder="price DT"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+              </Form.Group>
+              <Form.Select md="5" className="mb-2" required value={category_id} onChange={(e) => setCategory_id(e.target.value)}>
+                <option value="">Select a category</option>
+                {categories.map((categ) => {
+                  if (categ.id === category_id) {
+                    return (
+                      <option key={categ.id} value={categ.id}>
+                        {categ.name_categ}
+                      </option>
+                    );
+                  }
+                  return null;
+                })}
+              </Form.Select>
+              <Form.Select  md="5" className="mb-2" value={teacher_id}
+                  onChange={(e) => setTeacher_id(e.target.value)}> 
+                <option>Teacher</option>
+                      {teachers.map((teacher)=>
+                        <option key={teacher.id} value={teacher.id}>{teacher.firstname}  {teacher.lastname} </option>
+                      )}     
+              </Form.Select>
               <Form.Group controlId="formFileSm" md="5">
                 <Form.Control
                   required
                   type="file"
-                  onChange={(e) => setDocuments(e.target.files[0])}
+                  multiple
+                  onChange={(e) => setSelectedFiles(Array.from(e.target.files))}
                 />
               </Form.Group>
-        {/* Add Category Success Alert */}
+
+        {/* Add course Success Alert */}
         {showAddSuccessAlert && (
           <Alert variant="success" className="mt-3">
             Added with success
           </Alert>
         )}
 
-        {/* Add Category Error Alert */}
+        {/* Add course Error Alert */}
         {showAddErrorAlert && (
           <Alert variant="danger" className="mt-3">
             Error! Already exist
@@ -361,43 +453,43 @@ const AddCourse = () => {
     <div  className="container  justify-content-center" >
     <React.Fragment>
 <div>
-  <Form  className="border p-4" style={{backgroundColor: '#b9dada'}}>
-<p>
+  <Form  className="border p-4" style={{backgroundColor: '#b9dada'}} onSubmit={handleAdd}>
+
 <Typography  variant="h5" >Add new course </Typography>
-</p>   
+  
         <Form.Group  md="5" className='mb-3'>
-            <Form.Control type="text"  placeholder="title" required/>
+            <Form.Control type="text" maxLength="100"  placeholder="title" required value={title} onChange={(e)=>setTitle(e.target.value)}/>
         </Form.Group>
         <Form.Group  md="5" className='mb-3'>
-            <Form.Control type="text"  placeholder="description"/>
+            <Form.Control type="text" maxLength="200" placeholder="course_description" value={course_description} onChange={(e)=>setDescription(e.target.value)} />
         </Form.Group>
     <Row className="mb-3 justify-content-center">
     <div className="d-flex flex-row">
         <Form.Group as={Col} md="3" >
-            <Form.Control type="number"  placeholder="Price en DT" required/>
+            <Form.Control type="number"  placeholder="Price en DT" required value={price} onChange={(e)=>setPrice(e.target.value)}/>
         </Form.Group>
         <Form.Group controlId="formFileSm" as={Col} md="9" >
-            <Form.Control type="file" accept="image/"  />
+            <Form.Control type="file" multiple onChange={(e) => setSelectedFiles(Array.from(e.target.files))} />
         </Form.Group>
         </div>
     </Row>
     <Row className="mb-3 justify-content-center">
     <div className="d-flex flex-row">
-    <Form.Select aria-label="Default select example"  required>
+    <Form.Select aria-label="Default select example"  required value={category_id} onChange={(e)=>setCategory_id(e.target.value)} >
       <option>Category</option>
-      <option value="1">One</option>
-      <option value="2">Two</option>
-      <option value="3">Three</option>
+      {categories.map((categ)=>
+        <option value={categ.id} key={categ.id} >{categ.name_categ}</option>
+      )}
     </Form.Select>
-    <Form.Select aria-label="Default select example" required>
+    <Form.Select aria-label="Default select example" required value={teacher_id} onChange={(e)=>setTeacher_id(e.target.value)}  >
       <option>Teacher</option>
-      <option value="1">One</option>
-      <option value="2">Two</option>
-      <option value="3">Three</option>
+        {teachers.map((teacher)=>
+          <option value={teacher.id}  key={teacher.id}>{teacher.firstname}  {teacher.lastname}</option>
+        )}
     </Form.Select>
     </div>
     </Row>
-    <Button variant="success">Save</Button>
+    <Button type="submit" variant="success">Save</Button>
   </Form>
   </div>
   </React.Fragment>

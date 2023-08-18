@@ -23,8 +23,8 @@ export const createCourse = createAsyncThunk(
     try {
       const res = await addCourse(course);
       return res.data;
-    } catch (errorCourse) {
-      return rejectWithValue(errorCourse.message);
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
   }
 );
