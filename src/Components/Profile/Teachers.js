@@ -5,6 +5,7 @@ import { getTeachers } from '../../features/teacherSlice';
 import Grid from '@mui/material/Unstable_Grid2';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+
 import  '../style.css'
 import { Container } from '@mui/material';
 export const Teachers = () => {

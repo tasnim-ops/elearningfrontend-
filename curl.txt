@@ -1,0 +1,17 @@
+update 
+curl -X PUT "http://127.0.0.1:8000/api/vouv/4" -H "Content-Type: application/json" -d "{\"name\":\"Nouveau nom\",\"desc\":\"Nouvelle description\"}"
+
+store 
+curl -X POST "http://127.0.0.1:8000/api/vouv" -H "Content-Type: application/json" -d "{\"name\":\"Nom de l'objet\",\"desc\":\"Description de l'objet\"}"
+
+
+
+
+store with image 
+curl -X POST "http://127.0.0.1:8000/api/vouv" -H "Content-Type: multipart/form-data" -F "name=Nom de l'objet" -F "desc=Description de l'objet" -F "photo=@\"C:\Users\youss\OneDrive\Bureau\Tasnim\contact.jpg\""
+
+
+
+
+
+

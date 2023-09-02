@@ -1,4 +1,6 @@
 import React from 'react'
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const EditProfile = () => {
@@ -6,6 +8,7 @@ const EditProfile = () => {
   const handleNavigation = () => {
     navigate('/user/profile'); 
     };
+    const dispatch =useDispatch();
   return (
     
 <div>

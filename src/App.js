@@ -11,12 +11,12 @@ import AdminSignin from './Components/Admin/AdminSignin';
 import Profile from './Components/Profile/Profile';
 import EditProfile from './Components/Profile/EditProfile';
 import { EditCategory } from './Components/Elearning/EditCategory';
-import NavBarWel from './Components/Pages/NavBarWel';
 import ContactPage from './Components/Pages/ContactPage';
 import NavBarLog from './Components/Pages/NavBarLog';
 import { Teachers } from './Components/Profile/Teachers';
-import Welcome from './Components/Pages/Welcome';
 import HomePage from './Components/Pages/HomePage';
+import ShowCourses from './Components/Elearning/ShowCourses';
+import DashBoard from './Components/Admin/DashBoard';
 
 
 function App() {
@@ -38,6 +38,8 @@ function App() {
       <Route path="/contact" exact element={<ContactPage />}/>
       <Route path="/teachers" exact element={<Teachers />}/>
       <Route path="/" exact element={<HomePage />}/>
+      <Route path="/show-course/:courseId" element={<ShowCourses />} />   
+      <Route path="/dash" element={<DashBoard />} />   
 
     </Routes>
     </>

@@ -9,6 +9,7 @@ import { createCourse, deleteCourse, deleteCourseSuccess, getCourses, updateCour
 import{getTeachers,findTeacherByID} from '../../features/teacherSlice'
 import { getCategories } from '../../features/categorySlice';
 import Box from '@mui/material/Box';
+import { Link, useNavigate } from 'react-router-dom';
 const AddCourse = () => {
 
   const dispatch = useDispatch();
@@ -87,6 +88,7 @@ const AddCourse = () => {
                     console.error("Course ID is undefined.");
                   }
                 };
+                
                     // Function to handle file input change
                 const handleFileChange = (event) => {
                   const file = event.target.files[0];
@@ -165,7 +167,10 @@ const AddCourse = () => {
                   }
 
                 };
-                
+                const navigate = useNavigate();
+                const handleShowCourse = (courseId) => {
+                  navigate(`/show-course/${courseId}`); // Use navigate function without .push()
+                };
                 
                 const [showAddSuccessAlert, setShowAddSuccessAlert] = useState(false);
                 const [showAddErrorAlert, setShowAddErrorAlert] = useState(false);
@@ -268,17 +273,34 @@ const AddCourse = () => {
                   <CardContent>
                       <div style={{ height: '250px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative', 'padding':'2px' }}>
                         <Image src={categ.photo} rounded style={{ width: '100%', maxHeight: '100%', objectFit: 'cover', position: 'relative', top: 0, left: 0 }} />
-                      </div></CardContent>
-                  <CardContent>
-                    <EditIcon type='button' onClick={() => handleEditIconClick(course)} style={{ position: 'relative', left: '80%' }} />
+                      </div>
+                      </CardContent>
+                      <CardContent sx={{height:'90px'}} className='mt-3' >
+                    <Typography  variant="body2" color="text.secondary"  >{course.price} DT</Typography>
+                  </CardContent>
+                  <CardContent style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                    <EditIcon type='button' onClick={() => handleEditIconClick(course)} />
+                    <Link to={`/show-course/${course.id}`}>Show</Link>
                     <DeleteIcon type='button' onClick={() => handleDelecourse(course.id)} />
                   </CardContent>
-                </div>
+                      </div>
               </Col>
             ))}
           </Row>
         </div>
       </div>
+      {showAddSuccessAlert && (
+          <Alert variant="success" className="mt-3">
+            Added with success
+          </Alert>
+        )}
+
+        {/* Add course Error Alert */}
+        {showAddErrorAlert && (
+          <Alert variant="danger" className="mt-3">
+            Error! Already exist
+          </Alert>
+        )}
     </div>
   );
 })}
