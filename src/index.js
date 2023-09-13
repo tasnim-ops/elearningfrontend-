@@ -12,7 +12,7 @@ import store from './redux/store';
 import {Provider} from 'react-redux'
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import 'semantic-ui-css/semantic.min.css';
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With';
 

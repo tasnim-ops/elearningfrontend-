@@ -27,7 +27,7 @@ export const createTeacher=createAsyncThunk(
 ) ;
 
 export const deleteTeacher=createAsyncThunk(
-    "teacher,deleteTeacher",
+    "teacher/deleteTeacher",
     async(id,thunkAPI)=>{
         const {rejectWithValue}=thunkAPI;
         try{
