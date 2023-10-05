@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react';
 const SearchBar = ({ entityClass,  onSearchChange }) => {
-    const [searchTerm, setSearchTerm] = useState('');
-
+    const [input, setInput] = useState('');
+    
    
 
 

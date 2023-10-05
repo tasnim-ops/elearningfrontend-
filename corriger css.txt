@@ -53,15 +53,19 @@ const DashBoardHome = () => {
   };
 
   useEffect(() => {
-    dispatch(getTeachers());
-    dispatch(getCourses());
-    dispatch(getCategories());
-    dispatch(getStudents());
+    const fetchData = async () => {
+      await dispatch(getTeachers());
+      dispatch(getCourses());
+      dispatch(getCategories());
+      dispatch(getStudents());
+    };
+
+    fetchData();
   }, [dispatch]);
 
   const handleDeleteStudent = (id) => {
     if (window.confirm("Your are going to delete a student  O/N")) {
-      dispatch(deleteTeacher(id));
+      dispatch(deleteStudent(id));
     }
   };
   /************************Deletion*******************************/
@@ -69,29 +73,13 @@ const DashBoardHome = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false, "");
   const [selectedId, setSelectedId] = useState(null);
   const [showDeleteSuccessAlert, setShowDeleteSuccessAlert] = useState(false);
-
-  const [teacherTable, setTeacherTable] = useState([]); // Initialiser teacherTable avec un tableau vide
-  const [studentTable, setStudentTable] = useState([]); // Initialiser teacherTable avec un tableau vide
-  const [categoryTable, setCategoryTable] = useState([]); // Initialiser teacherTable avec un tableau vide
-  const [courseTable, setCourseTable] = useState([]); // Initialiser teacherTable avec un tableau vide
-
-  console.log("initialement", teacherTable.length);
-
-  useEffect(
-    () => {
-      setTeacherTable(teachers); // Mettre à jour teacherTable lorsque teachers est prêt
-      setStudentTable(students);
-      setCategoryTable(categories);
-      setCourseTable(courses);
-    },
-    [teachers],
-    [students],
-    [categories],
-    [courses]
-  );
-
-  //console.log("1erment", teacherTable.length);
   const [attribute, setAttribute] = useState("");
+  const [allTeachers, setAllTeachers] = useState([]);
+  const [teacherSearchResults, setTeacherSearchResults] = useState(teachers);
+  const [studentSearchResults, setStudentSearchResults] = useState(students);
+  const [categorySearchResults, setCategorySearchResults] =
+    useState(categories);
+  const [courseSearchResults, setCourseSearchResults] = useState(courses);
   const çhandleShowDeleteModal = (id) => {
     setSelectedId(id);
     setShowDeleteModal(true);
@@ -143,59 +131,58 @@ const DashBoardHome = () => {
     { class: "category" },
     { class: "course" },
   ];
-  //const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState(teachers);
   const [currentSearchTerm, setCurrentSearchTerm] = useState("");
   const handleSearchChange = (entityClass, newSearchTerm) => {
-    // Pas besoin de vérifier searchTerm ici, car vous souhaitez effectuer la recherche à chaque modification de la saisie
     setCurrentSearchTerm(newSearchTerm);
-
-    // initialize an empty array
     let filteredEntities = [];
 
     switch (entityClass) {
       case "teacher":
-        filteredEntities = teachers.filter((teacher) => {
-          const fullName = `${teacher.firstname} ${teacher.lastname}`;
-          return fullName.toLowerCase().includes(newSearchTerm.toLowerCase());
-        });
-        setTeacherTable(filteredEntities);
-        //console.log("2ement", teacherTable.length);
+        if (newSearchTerm.trim() === "") {
+          setTeacherSearchResults(teachers);
+        } else {
+          filteredEntities = teachers.filter((teacher) => {
+            const fullName = `${teacher.firstname} ${teacher.lastname}`;
+            return fullName.toLowerCase().includes(newSearchTerm.toLowerCase());
+          });
+          setTeacherSearchResults(filteredEntities);
+        }
         break;
       case "student":
-        filteredEntities = students.filter((student) => {
-          const fullName = `${student.firstname} ${student.lastname}`;
-          return fullName.toLowerCase().includes(newSearchTerm.toLowerCase());
-        });
-        setStudentTable(filteredEntities);
-        console.log("2ement", teacherTable.length);
+        setStudentSearchResults(students);
+        if (newSearchTerm.trim() !== "") {
+          filteredEntities = students.filter((student) => {
+            const fullName = `${student.firstname} ${student.lastname}`;
+            return fullName.toLowerCase().includes(newSearchTerm.toLowerCase());
+          });
+          setStudentSearchResults(filteredEntities);
+        }
         break;
       case "category":
-        filteredEntities = categories.filter(
-          (category) =>
-            category.name_categ &&
+        setCategorySearchResults(categories);
+        if (newSearchTerm.trim() !== "") {
+          filteredEntities = categories.filter((category) =>
             category.name_categ
               .toLowerCase()
               .includes(newSearchTerm.toLowerCase())
-        );
-        setCategoryTable(filteredEntities);
-        console.log("2ement", teacherTable.length);
+          );
+          setCategorySearchResults(filteredEntities);
+        }
         break;
       case "course":
-        filteredEntities = courses.filter(
-          (course) =>
-            course.title &&
+        setCourseSearchResults(courses);
+        if (newSearchTerm.trim() !== "") {
+          filteredEntities = courses.filter((course) =>
             course.title.toLowerCase().includes(newSearchTerm.toLowerCase())
-        );
-        setCourseTable(filteredEntities);
-        console.log("2ement", teacherTable.length);
+          );
+          setCourseSearchResults(filteredEntities);
+        }
         break;
       default:
         console.error(`Unsupported entity class: ${entityClass}`);
     }
-
-    console.log(`Search results for ${entityClass}:`, filteredEntities);
-    setSearchResults(filteredEntities);
   };
 
   return (
@@ -203,35 +190,35 @@ const DashBoardHome = () => {
       <main className="main-container">
         <div className="main-title"></div>
         <div className="main-cards">
-          <div className="card">
+          <div className="card" id="categ">
             <div className="card-inner">
               <p>CATEGORIES</p>
               <BsFillArchiveFill className="card_icon" />
             </div>
             <h3>{categories.length}</h3>
           </div>
-          <div className="card">
+          <div className="card" id="curs">
             <div className="card-inner">
               <p>COURSES</p>
               <BsFillGrid3X3GapFill className="card_icon" />
             </div>
             <h3>{courses.length}</h3>
           </div>
-          <div className="card">
+          <div className="card" id="teach">
             <div className="card-inner">
               <p>TEACHERS</p>
               <BsPeopleFill className="card_icon" />
             </div>
             <h3>{teachers.length}</h3>
           </div>
-          <div className="card">
+          <div className="card " id="stud">
             <div className="card-inner">
               <p>STUDENTS</p>
               <student className="card_icon" />
             </div>
             <h3>{students.length}</h3>
           </div>
-          <div className="card">
+          <div className="card" id="conf">
             <div className="card-inner">
               <p>CONFERENCES</p>
               <BsListCheck className="card_icon" />
@@ -240,62 +227,63 @@ const DashBoardHome = () => {
           </div>
         </div>
         <div></div>
-        {/* teacher table  */}
-        <div id="course">
+        {/* teacher table */}
+        <div id="teacher">
           <div className="row mt-2">
             <div className="col-sm-4 mb-2">
-              <h2>Teacher</h2>
+              <h2>Teachers</h2>
             </div>
-            <div className="col-sm-4 mb-2">
+            <div className="search-container col-sm-4 mb-2">
               <SearchBar
-                entityClass="teacher" // Remplacez par la classe d'entité actuelle
+                entityClass="teacher"
                 onSearchChange={(newSearchTerm) =>
                   handleSearchChange("teacher", newSearchTerm)
                 }
               />
+              {/* SearchResults pour les enseignants */}
+              <SearchResults results={teacherSearchResults} />
             </div>
           </div>
-          {/* SearchResults pour les enseignants */}
-          {/*<SearchResults results={searchResults} />*/}
-          {teachers.length > 0 && (
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Photo</th>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Phone</th>
-                  <th>Mail</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {teacherTable.map((teacher) => (
-                  <tr key={teacher.id}>
-                    <td>
-                      <Avatar
-                        src={teacher.photo}
-                        sx={{ width: 56, height: 56 }}
-                      />
-                    </td>
-                    <td>
-                      {teacher.firstname} {teacher.lastname}
-                    </td>
-                    <td>{teacher.desc}</td>
-                    <td>{teacher.phone}</td>
-                    <td>{teacher.email}</td>
-                    <td>
-                      <IoMdTrash
-                        type="button"
-                        onClick={() => handleDelete(teacher.id, "teacher")}
-                      />{" "}
-                      <HiPencilSquare />
-                    </td>
+          {currentSearchTerm === "teacher" &&
+            teacherSearchResults.length > 0 && (
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Phone</th>
+                    <th>Mail</th>
+                    <th>Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                </thead>
+                <tbody>
+                  {teacherSearchResults.map((teacher) => (
+                    <tr key={teacher.id}>
+                      <td>
+                        <Avatar
+                          src={teacher.photo}
+                          sx={{ width: 56, height: 56 }}
+                        />
+                      </td>
+                      <td>
+                        {teacher.firstname} {teacher.lastname}
+                      </td>
+                      <td>{teacher.desc}</td>
+                      <td>{teacher.phone}</td>
+                      <td>{teacher.email}</td>
+                      <td>
+                        <IoMdTrash
+                          type="button"
+                          onClick={() => handleDelete(teacher.id, "teacher")}
+                        />
+                        <HiPencilSquare />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
         </div>
 
         {/* student table  */}
@@ -307,52 +295,52 @@ const DashBoardHome = () => {
             <div className="col-sm-4 mb-2">
               <SearchBar
                 entityClass="student"
-                //entities={students}
-                onSearchChange={(newSearchTerm) =>
-                  handleSearchChange("student", newSearchTerm)
-                }
+                entities={students}
+                onSearchChange={handleSearchChange}
               />
+              <SearchResults results={searchResults} />
             </div>
           </div>
-          {students.length > 0 && (
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Photo</th>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Phone</th>
-                  <th>Mail</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {studentTable.map((student) => (
-                  <tr key={student.id}>
-                    <td>
-                      <Avatar
-                        src={student.photo}
-                        sx={{ width: 56, height: 56 }}
-                      />
-                    </td>
-                    <td>
-                      {student.firstname} {student.lastname}
-                    </td>
-                    <td>{student.desc}</td>
-                    <td>{student.phone}</td>
-                    <td>{student.email}</td>
-                    <td>
-                      <IoMdTrash
-                        type="button"
-                        onClick={() => handleDelete(student.id, "student")}
-                      />
-                      <HiPencilSquare />
-                    </td>
+          {currentSearchTerm === "student" &&
+            studentSearchResults.length > 0 && (
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Phone</th>
+                    <th>Mail</th>
+                    <th>Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                </thead>
+                <tbody>
+                  {students.map((student) => (
+                    <tr key={student.id}>
+                      <td>
+                        <Avatar
+                          src={student.photo}
+                          sx={{ width: 56, height: 56 }}
+                        />
+                      </td>
+                      <td>
+                        {student.firstname} {student.lastname}
+                      </td>
+                      <td>{student.desc}</td>
+                      <td>{student.phone}</td>
+                      <td>{student.email}</td>
+                      <td>
+                        <IoMdTrash
+                          type="button"
+                          onClick={() => handleDelete(student.id, "student")}
+                        />{" "}
+                        <HiPencilSquare />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
         </div>
 
         {/* Ctegories table  */}
@@ -364,11 +352,10 @@ const DashBoardHome = () => {
             <div className="col-sm-4 mb-2">
               <SearchBar
                 entityClass="category"
-                //entities={categories}
-                onSearchChange={(newSearchTerm) =>
-                  handleSearchChange("category", newSearchTerm)
-                }
+                entities={categories}
+                onSearchChange={handleSearchChange}
               />
+              <SearchResults results={searchResults} />
             </div>
           </div>
           {categories.length > 0 && (
@@ -381,7 +368,7 @@ const DashBoardHome = () => {
                 </tr>
               </thead>
               <tbody>
-                {categoryTable.map((categ) => (
+                {categories.map((categ) => (
                   <tr key={categ.id}>
                     <td>
                       <Avatar
@@ -412,11 +399,10 @@ const DashBoardHome = () => {
             <div className="col-sm-4 mb-2">
               <SearchBar
                 entityClass="course"
-                //entities={courses}
-                onSearchChange={(newSearchTerm) =>
-                  handleSearchChange("course", newSearchTerm)
-                }
+                entities={courses}
+                onSearchChange={handleSearchChange}
               />
+              <SearchResults results={searchResults} />
             </div>
           </div>
           {courses.length > 0 && (
@@ -433,7 +419,7 @@ const DashBoardHome = () => {
                 </tr>
               </thead>
               <tbody>
-                {courseTable.map((course) => (
+                {courses.map((course) => (
                   <tr key={course.id}>
                     <td>{course.title}</td>
                     <td>{course.course_description}</td>

@@ -129,7 +129,6 @@
    /* overflow-y: auto; */
    margin-top: 50px;
    padding: 20px 20px;
-   color: rgb(243, 239, 14);
  }
  
  .main-title {
@@ -199,24 +198,24 @@
    text-overflow: ellipsis;
  }
  
- .card:first-child {
-   background-color: deepskyblue;
+ #categ {
+   background-color: rgb(48, 155, 209);
  }
  
- .card:nth-child(2) {
+ #curs {
    background-color: chartreuse;
  }
  
- .card:nth-child(3) {
+#teach {
    background-color: rgb(22, 114, 114);
  }
  
- .card:nth-child(4) {
+ #stud {
    background-color: rgb(255, 0, 85);
  }
  
- .card:nth-child(5) {
-   background-color: #18B7BE;
+ #conf {
+   background-color: #c6f150;
  }
  
  .card:nth-child(6) {
@@ -329,5 +328,45 @@
 
 
 
+/* SEARCH 
+.result-list{
+  width:100%;
+  background-color: #f9f1f0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 0px 0ox #18B7BE;
+  border-radius: 10px;
+  margin-top: 1rem;
+  max-height: 300px;
+  overflow: scroll;
+  border: solid 1px;
+  border: 6px dashed black;
+}
+*/
+.search-container{
+  
+ display:block;
+}
+.scroll-container{
+  width: 180px;
+  height: 120px;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+ /*display: block;
+  margin: 0 auto;
+  text-align: center;*/
+  box-shadow: 0px 0px 0ox #18B7BE;
+  border: solid 1px;
+    background-color: #f9f1f0;
+}
+.scroll-container ul {
+  margin: 0;
+  padding: 0;
+  list-style: none; /* Supprime les puces par défaut */
+}
 
- 
+/* Optionnel : ajuster la marge ou le rembourrage des éléments de liste individuels si nécessaire */
+.scroll-container li {
+  margin: 0;
+  padding: 0;
+}
