@@ -203,35 +203,35 @@ const DashBoardHome = () => {
       <main className="main-container">
         <div className="main-title"></div>
         <div className="main-cards">
-          <div className="card">
+          <div className="card" id="categ">
             <div className="card-inner">
               <p>CATEGORIES</p>
               <BsFillArchiveFill className="card_icon" />
             </div>
             <h3>{categories.length}</h3>
           </div>
-          <div className="card">
+          <div className="card" id="curs">
             <div className="card-inner">
               <p>COURSES</p>
               <BsFillGrid3X3GapFill className="card_icon" />
             </div>
             <h3>{courses.length}</h3>
           </div>
-          <div className="card">
+          <div className="card" id="teach">
             <div className="card-inner">
               <p>TEACHERS</p>
               <BsPeopleFill className="card_icon" />
             </div>
             <h3>{teachers.length}</h3>
           </div>
-          <div className="card">
+          <div className="card" id="stud">
             <div className="card-inner">
               <p>STUDENTS</p>
               <student className="card_icon" />
             </div>
             <h3>{students.length}</h3>
           </div>
-          <div className="card">
+          <div className="card" id="conf">
             <div className="card-inner">
               <p>CONFERENCES</p>
               <BsListCheck className="card_icon" />

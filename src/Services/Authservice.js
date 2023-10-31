@@ -1,9 +1,9 @@
 import Api from "../Axios/Api";
 
-export const signup = async (admin) => {
-  return await Api.post("/register", admin);
+export const signup = async (user) => {
+  return await Api.post("/register", user);
 };
 
-export const signin = async (admin) => {
-  return await Api.post("/login", admin);
+export const signin = async (user) => {
+  return await Api.post("/login", user);
 };
