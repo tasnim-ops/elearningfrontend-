@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  MDBContainer,
-  MDBCol,
-  MDBRow,
-  MDBBtn,
-  MDBIcon,
-  MDBInput,
-  MDBCheckbox,
-} from "mdb-react-ui-kit";
+import { MDBContainer, MDBCol, MDBRow } from "mdb-react-ui-kit";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login, reset } from "../../features/authSlice";
 
 const AdminSignin = () => {
+  const errorMessage = useSelector((state) => state.auth.error);
   const [role, setRole] = useState("admin");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,12 +15,12 @@ const AdminSignin = () => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     data.append("role", role);
-    dispatch(login(Object.fromEntries(data.entries())));
+    dispatch(login(data));
   };
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate("/admin/dashboard");
+      navigate("/dash");
       dispatch(reset());
     }
   }, [isLoggedIn, navigate, dispatch]);
@@ -87,6 +80,7 @@ const AdminSignin = () => {
                       </h6>
                     </p>
                   </div>
+
                   <div className="col-sm-6 mb-2">
                     <p>
                       <h6 style={{ color: "#ff2300" }}>

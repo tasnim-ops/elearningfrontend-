@@ -1,21 +1,29 @@
-import React from 'react'
-import {BsJustify, BsSearch, BsFillBellFill, BsFillEnvelopeFill, BsPersonCircle} from 'react-icons/bs';
-import './DashBoard.css';
-import DashBoardHeader from './DashBoardHeader';
-import DashBoardSidebar from './DashBoardSidebar';
-import DashBoardHome from './DashBoardHome';
+import React from "react";
+import {
+  BsJustify,
+  BsSearch,
+  BsFillBellFill,
+  BsFillEnvelopeFill,
+  BsPersonCircle,
+} from "react-icons/bs";
+import "./DashBoard.css";
+import DashBoardSidebar from "./DashBoardSidebar";
+import DashBoardHome from "./DashBoardHome";
+import { useSelector } from "react-redux";
+import { redirect } from "react-router-dom";
 
 const DashBoard = (props) => {
+  const { isLoggedIn, role } = useSelector((state) => state.auth);
+  if (isLoggedIn === true && role === "admin") {
+    return (
+      <div className="grid-container">
+        <DashBoardSidebar />
+        <DashBoardHome />
+      </div>
+    );
+  } else {
+    return redirect("/");
+  }
+};
 
-  return (
-<div className='grid-container'>
-    <DashBoardHeader/>
-    <DashBoardSidebar />
-    <DashBoardHome />
-</div>
-  )
-}
-
-  
-
-export default DashBoard
+export default DashBoard;

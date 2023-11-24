@@ -1,7 +1,11 @@
-import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
-import { addCategory, delCategory, editCategory, fetchCategories, fetchCategoryById } from "../Services/CategoryService";
-
-
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
+import {
+  addCategory,
+  delCategory,
+  editCategory,
+  fetchCategories,
+  fetchCategoryById,
+} from "../Services/CategoryService";
 
 export const getCategories = createAsyncThunk(
   "category/getCategories",
@@ -43,14 +47,13 @@ export const deleteCategory = createAsyncThunk(
   }
 );
 
-
 export const updateCategory = createAsyncThunk(
   "category/updateCategory",
   async (category, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+    console.log("now hear", category.id);
+    const { rejectWithValue, dispatch } = thunkAPI;
     try {
       const res = await editCategory(category);
-      thunkAPI.dispatch(updateCategorySuccess()); // Dispatch an action to set success to true
       return res.data;
     } catch (error) {
       console.error("An error occurred while updating the category:", error);
@@ -58,7 +61,6 @@ export const updateCategory = createAsyncThunk(
     }
   }
 );
-
 
 export const findCategoryById = createAsyncThunk(
   "category/findCategoryById",
@@ -74,7 +76,7 @@ export const findCategoryById = createAsyncThunk(
 );
 
 export const categorySlice = createSlice({
-  name: 'category',
+  name: "category",
   initialState: {
     categories: [],
     category: {},
@@ -83,7 +85,7 @@ export const categorySlice = createSlice({
     error: null,
   },
   reducers: {
-     updateCategorySuccess: (state) => {
+    updateCategorySuccess: (state) => {
       state.success = true;
     },
     deleteCategorySuccess: (state) => {
@@ -104,7 +106,7 @@ export const categorySlice = createSlice({
       })
       .addCase(getCategories.rejected, (state, action) => {
         state.isLoading = false;
-        console.log("Can not connect to server")
+        console.log("Can not connect to server");
       })
 
       // insert category
@@ -153,7 +155,9 @@ export const categorySlice = createSlice({
       .addCase(deleteCategory.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.categories = state.categories.filter((item) => item._id !== action.payload);
+        state.categories = state.categories.filter(
+          (item) => item._id !== action.payload
+        );
       })
       .addCase(deleteCategory.rejected, (state, action) => {
         state.isLoading = false;
@@ -174,11 +178,9 @@ export const categorySlice = createSlice({
       .addCase(findCategoryById.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
-      })
-
-;
-      
-  }
+      });
+  },
 });
-export const { updateCategorySuccess, deleteCategorySuccess } = categorySlice.actions;
+export const { updateCategorySuccess, deleteCategorySuccess } =
+  categorySlice.actions;
 export default categorySlice.reducer;

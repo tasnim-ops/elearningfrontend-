@@ -1,27 +1,33 @@
-import "./App.css";
-import Register from "./Components/Authentification/Register";
-import Signin from "./Components/Authentification/Signin";
+import React, { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Category from "./Components/Elearning/Category";
 import AddCategory from "./Components/Elearning/AddCategory";
 import AddCourse from "./Components/Elearning/AddCourse";
 import EditCourse from "./Components/Elearning/EditCourse";
-import { Routes, Route } from "react-router-dom";
 import AdminRegister from "./Components/Admin/AdminRegister";
 import AdminSignin from "./Components/Admin/AdminSignin";
 import Profile from "./Components/Profile/Profile";
 import EditProfile from "./Components/Profile/EditProfile";
-import { EditCategory } from "./Components/Elearning/EditCategory";
+import EditCategory from "./Components/Elearning/EditCategory";
 import ContactPage from "./Components/Pages/ContactPage";
 import NavBarLog from "./Components/Pages/NavBarLog";
-import { Teachers } from "./Components/Profile/Teachers";
 import HomePage from "./Components/Pages/HomePage";
 import ShowCourses from "./Components/Elearning/ShowCourses";
 import DashBoard from "./Components/Admin/DashBoard";
+import ProtectedRoutes from "./Components/Profile/ProtectedRoutes";
+import NavBarWel from "./Components/Pages/NavBarWel";
+import Register from "./Components/Authentification/Register";
+import Signin from "./Components/Authentification/Signin";
+import { Teachers } from "./Components/Profile/Teachers";
 
 function App() {
+  const { isLoggedIn, role, user } = useSelector((state) => state.auth);
+
   return (
     <>
-      <NavBarLog />
+      {isLoggedIn ? <NavBarLog user={user} /> : <NavBarWel />}
+
       <Routes>
         <Route path="user/register" exact element={<Register />} />
         <Route path="user/login" exact element={<Signin />} />

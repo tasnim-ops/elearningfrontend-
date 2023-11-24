@@ -23,6 +23,7 @@ export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
     const token = res.data.authorization.token;
     //console.log("Token:", token);
     localStorage.setItem("CC_Token", token);
+    //console.log("1231456", res.data);
     return res.data;
   } catch (error) {
     console.error("Error during API Call:", error);
@@ -38,6 +39,7 @@ export const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
+    role: null,
     isLoading: false,
     isSuccess: false,
     errorMessage: "",
@@ -61,7 +63,8 @@ export const authSlice = createSlice({
         state.status = null;
       })
       .addCase(register.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = action.payload.user;
+        //state.role = action.payload.role;
         state.isLoading = false;
         state.status = null;
         state.isSuccess = true;
@@ -79,6 +82,7 @@ export const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isLoggedIn = true;
         state.user = action.payload.user;
+        state.role = action.payload.role;
         console.log(action.payload.authorization.token);
         localStorage.setItem("CC_Token", action.payload.authorization.token);
       })

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import {
-  MDBBtn,
   MDBContainer,
   MDBCard,
   MDBCardBody,
@@ -31,9 +30,10 @@ const Signin = () => {
         role,
       };
       dispatch(login(user));
-      if (user.role === "teacher") navigate("/editcateg");
-      if (user.role === "student") {
-        navigate("/categ");
+      if (user.role === "admin") {
+        navigate("/dash");
+      } else {
+        navigate("/");
       }
     }
   };
@@ -117,7 +117,6 @@ const Signin = () => {
                       <Link to="/user/register">Register</Link>
                     </h6>
                   </MDBCol>
-                  {errorMessage && alert(errorMessage)}
                   <MDBCol md="6">
                     <h6 style={{ color: "#ff2300" }}>
                       Forgot your password ? <Link to="">Refresh</Link>
