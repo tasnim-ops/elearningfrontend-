@@ -27,24 +27,36 @@ import { deleteCourse, getCourses } from "../../features/courseSlice";
 import { BsSearch } from "react-icons/bs";
 import SearchResults from "./SearchResults";
 import SearchBar from "./SearchBar";
+import { getConfig } from "@testing-library/react";
+import {
+  deleteConference,
+  getConferences,
+} from "../../features/conferenceSlice";
 const DashBoardHome = () => {
   const { teachers } = useSelector((state) => state.teacher);
   const { students } = useSelector((state) => state.student);
   const { categories } = useSelector((state) => state.category);
   const { courses } = useSelector((state) => state.course);
+  const { conferences } = useSelector((state) => state.conference);
   const dispatch = useDispatch();
 
   //couse's documents modal
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedConfrence, setSelectedConfrence] = useState(null);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleCourseClick = (course) => {
-    console.log("Selected Course:", course);
+    //console.log("Selected Course:", course);
     setSelectedCourse(course);
     handleOpenModal();
   };
-
+  const handleConferenceClick = (conf) => {
+    //console.log("Selected Course:", course);
+    setSelectedConfrence(conf);
+    handleOpenModal();
+  };
   const handleOpenModal = () => {
-    console.log("Selected Course:", selectedCourse);
+    //console.log("Selected Course:", selectedCourse);
     setIsModalOpen(true);
   };
 
@@ -57,11 +69,12 @@ const DashBoardHome = () => {
     dispatch(getCourses());
     dispatch(getCategories());
     dispatch(getStudents());
+    dispatch(getConferences());
   }, [dispatch]);
 
   const handleDeleteStudent = (id) => {
     if (window.confirm("Your are going to delete a student  O/N")) {
-      dispatch(deleteTeacher(id));
+      dispatch(deleteStudent(id));
     }
   };
   /************************Deletion*******************************/
@@ -70,27 +83,29 @@ const DashBoardHome = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [showDeleteSuccessAlert, setShowDeleteSuccessAlert] = useState(false);
 
-  const [teacherTable, setTeacherTable] = useState([]); // Initialiser teacherTable avec un tableau vide
-  const [studentTable, setStudentTable] = useState([]); // Initialiser teacherTable avec un tableau vide
-  const [categoryTable, setCategoryTable] = useState([]); // Initialiser teacherTable avec un tableau vide
-  const [courseTable, setCourseTable] = useState([]); // Initialiser teacherTable avec un tableau vide
-
-  console.log("initialement", teacherTable.length);
+  const [teacherTable, setTeacherTable] = useState([]);
+  const [studentTable, setStudentTable] = useState([]);
+  const [categoryTable, setCategoryTable] = useState([]);
+  const [courseTable, setCourseTable] = useState([]);
+  const [conferenceTable, setConferenceTable] = useState();
+  console.log("first", studentTable);
 
   useEffect(
     () => {
-      setTeacherTable(teachers); // Mettre à jour teacherTable lorsque teachers est prêt
-      setStudentTable(students);
+      setTeacherTable(teachers);
       setCategoryTable(categories);
       setCourseTable(courses);
+      setStudentTable(students);
+      setConferenceTable(conferences);
     },
     [teachers],
     [students],
     [categories],
-    [courses]
+    [courses],
+    [students],
+    [conferences]
   );
 
-  //console.log("1erment", teacherTable.length);
   const [attribute, setAttribute] = useState("");
   const çhandleShowDeleteModal = (id) => {
     setSelectedId(id);
@@ -119,6 +134,9 @@ const DashBoardHome = () => {
       case "category":
         deleteAction = deleteCategory(selectedId);
         break;
+      case "conference":
+        deleteAction = deleteConference(selectedId);
+        break;
       default:
         deleteAction = deleteCourse(selectedId);
     }
@@ -142,12 +160,12 @@ const DashBoardHome = () => {
     { class: "student" },
     { class: "category" },
     { class: "course" },
+    { class: "conference" },
   ];
   //const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [currentSearchTerm, setCurrentSearchTerm] = useState("");
   const handleSearchChange = (entityClass, newSearchTerm) => {
-    // Pas besoin de vérifier searchTerm ici, car vous souhaitez effectuer la recherche à chaque modification de la saisie
     setCurrentSearchTerm(newSearchTerm);
 
     // initialize an empty array
@@ -160,7 +178,6 @@ const DashBoardHome = () => {
           return fullName.toLowerCase().includes(newSearchTerm.toLowerCase());
         });
         setTeacherTable(filteredEntities);
-        //console.log("2ement", teacherTable.length);
         break;
       case "student":
         filteredEntities = students.filter((student) => {
@@ -168,7 +185,6 @@ const DashBoardHome = () => {
           return fullName.toLowerCase().includes(newSearchTerm.toLowerCase());
         });
         setStudentTable(filteredEntities);
-        console.log("2ement", teacherTable.length);
         break;
       case "category":
         filteredEntities = categories.filter(
@@ -179,7 +195,6 @@ const DashBoardHome = () => {
               .includes(newSearchTerm.toLowerCase())
         );
         setCategoryTable(filteredEntities);
-        console.log("2ement", teacherTable.length);
         break;
       case "course":
         filteredEntities = courses.filter(
@@ -188,13 +203,20 @@ const DashBoardHome = () => {
             course.title.toLowerCase().includes(newSearchTerm.toLowerCase())
         );
         setCourseTable(filteredEntities);
-        console.log("2ement", teacherTable.length);
+        break;
+      case "conference":
+        filteredEntities = conferences.filtre(
+          (conference) =>
+            conference.title &&
+            conference.title.toLowerCase().includes(newSearchTerm.toLowerCase())
+        );
+        setConferenceTable(filteredEntities);
         break;
       default:
-        console.error(`Unsupported entity class: ${entityClass}`);
+      //console.error(`Unsupported entity class: ${entityClass}`);
     }
 
-    console.log(`Search results for ${entityClass}:`, filteredEntities);
+    //console.log(`Search results for ${entityClass}:`, filteredEntities);
     setSearchResults(filteredEntities);
   };
 
@@ -236,7 +258,7 @@ const DashBoardHome = () => {
               <p>CONFERENCES</p>
               <BsListCheck className="card_icon" />
             </div>
-            <h3>150</h3>
+            <h3>{conferences.length}</h3>
           </div>
         </div>
         <div></div>
@@ -255,8 +277,6 @@ const DashBoardHome = () => {
               />
             </div>
           </div>
-          {/* SearchResults pour les enseignants */}
-          {/*<SearchResults results={searchResults} />*/}
           {teachers.length > 0 && (
             <table className="table">
               <thead>
@@ -464,6 +484,68 @@ const DashBoardHome = () => {
             </table>
           )}
         </div>
+        {/* Conference table  */}
+        <div id="conference">
+          <div className="row mt-2">
+            <div className="col-sm-4 mb-2">
+              <h2>Conferences</h2>
+            </div>
+            <div className="col-sm-4 mb-2">
+              <SearchBar
+                entityClass="conference"
+                //entities={courses}
+                onSearchChange={(newSearchTerm) =>
+                  handleSearchChange("conference", newSearchTerm)
+                }
+              />
+            </div>
+          </div>
+          {courses.length > 0 && (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Teacher</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Participants</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {conferenceTable.map((conf) => (
+                  <tr key={conf.id}>
+                    <td>{conf.title}</td>
+                    <td>{conf.description}</td>
+                    <td>
+                      {conf.teacher.firstname}
+                      {conf.teacher.lastname}
+                    </td>
+                    <td>{conf.confdate}</td>
+                    <td>{conf.conftime}</td>
+                    <td>
+                      <button
+                        className="btn"
+                        type="button"
+                        onClick={() => handleConferenceClick(conf)}
+                      >
+                        Show
+                      </button>
+                    </td>
+                    <td>
+                      <IoMdTrash
+                        type="button"
+                        onClick={() => handleDelete(conf.id, "conferencee")}
+                      />{" "}
+                      <HiPencilSquare />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </main>
       {/* Deletion Modal  */}
       <Modal
@@ -533,6 +615,34 @@ const DashBoardHome = () => {
               ))
             ) : (
               <li>No documents available</li>
+            )}
+          </ul>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Fermer
+          </Button>
+        </Modal.Footer>
+        {/* conferences list Modal  */}
+      </Modal>
+      <Modal show={isModalOpen} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {selectedConfrence && selectedConfrence.title
+              ? selectedConfrence.title
+              : "Title not available"}
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body dialogClassName="custom-modal">
+          <h3>Participants:</h3>
+          <ul>
+            {selectedConfrence ? (
+              selectedConfrence.participants.map((participant, index) => (
+                <h5>{participant}</h5>
+              ))
+            ) : (
+              <li>No participant</li>
             )}
           </ul>
         </Modal.Body>

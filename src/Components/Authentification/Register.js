@@ -20,7 +20,8 @@ const Register = () => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [role, setRole] = useState("teacher"); // Initialisation avec "teacher" par défaut
+  const [role, setRole] = useState("teacher");
+  const [photo, setPhoto] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -36,8 +37,8 @@ const Register = () => {
         password,
         phone,
         role,
+        //photo,
       };
-
       dispatch(register(user))
         .then((res) => {
           console.log("insert ok in", role, res);
@@ -47,6 +48,7 @@ const Register = () => {
           setPhone("");
           setRole("teacher");
           setEmail("");
+          setPhoto(null);
           // Redirigez l'utilisateur vers la page login
           navigate("/user/login");
         })
@@ -176,6 +178,15 @@ const Register = () => {
                     />
                   </MDBCol>
                 </MDBRow>
+                <div>
+                  <h5>Please enter your photo</h5>
+                  <MDBInput
+                    type="file"
+                    onChange={(e) => {
+                      setPhoto(e.target.files[0]); // Utilisez e.target.files[0] pour accéder au fichier
+                    }}
+                  />
+                </div>
                 <button
                   style={{ backgroundColor: "#1794bb ", color: "#ffffff" }}
                   className="mb-4 ripple ripple-surface ripple-surface-light btn btn-lg mb-4"

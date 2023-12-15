@@ -6,7 +6,7 @@ export const sendContact = createAsyncThunk(
     const { rejectWithValue } = thunkAPI;
     try {
       const res = await addContact(contact);
-      console.log("test hear slice");
+      //console.log("test hear slice");
       return res.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -34,6 +34,7 @@ export const contactSlice = createSlice({
         state.isLoading = false;
         state.error = null;
         state.success = true;
+        console.log("test slice success", state.success);
       })
       .addCase(sendContact.rejected, (state, action) => {
         state.isLoading = false;

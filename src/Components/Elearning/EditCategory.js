@@ -28,6 +28,8 @@ export const EditCategory = () => {
   const { categories, isLoading, error, success } = useSelector(
     (state) => state.category
   );
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  //console.log("teacher logged In", isLoggedIn);
   useEffect(() => {
     document.body.style.backgroundColor = "#bfeae9";
     dispatch(getCategories());

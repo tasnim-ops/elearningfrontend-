@@ -50,13 +50,13 @@ export const deleteCategory = createAsyncThunk(
 export const updateCategory = createAsyncThunk(
   "category/updateCategory",
   async (category, thunkAPI) => {
-    console.log("now hear", category.id);
+    //console.log("now hear", category.id);
     const { rejectWithValue, dispatch } = thunkAPI;
     try {
       const res = await editCategory(category);
       return res.data;
     } catch (error) {
-      console.error("An error occurred while updating the category:", error);
+      //console.error("An error occurred while updating the category:", error);
       throw error; // Rethrow the error to be caught by the caller
     }
   }
@@ -106,7 +106,7 @@ export const categorySlice = createSlice({
       })
       .addCase(getCategories.rejected, (state, action) => {
         state.isLoading = false;
-        console.log("Can not connect to server");
+        //console.log("Can not connect to server");
       })
 
       // insert category

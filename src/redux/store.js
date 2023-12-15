@@ -19,7 +19,7 @@ import authSlice from "../features/authSlice";
 import courseSlice from "../features/courseSlice";
 import studentSlice from "../features/studentSlice";
 import contactSlice from "../features/contactSlice";
-
+import conferenceSlice from "../features/conferenceSlice";
 // Configure persistence
 const persistConfig = {
   key: "root",
@@ -39,6 +39,7 @@ const store = configureStore({
     course: courseSlice,
     student: studentSlice,
     contact: contactSlice,
+    conference: conferenceSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -80,16 +80,20 @@ export const authSlice = createSlice({
         state.status = null;
       })
       .addCase(login.fulfilled, (state, action) => {
+        //console.log("test login", state.isLoggedIn);
         state.isLoggedIn = true;
+        console.log("test login", state.isLoggedIn);
+
         state.user = action.payload.user;
         state.role = action.payload.role;
-        console.log(action.payload.authorization.token);
+        //console.log(action.payload.authorization.token);
         localStorage.setItem("CC_Token", action.payload.authorization.token);
       })
       .addCase(login.rejected, (state, action) => {
+        //console.log("it came here");
         state.isLoggedIn = false;
         state.user = null;
-        state.error = "Invalid authentication data";
+        state.error = action.payload.error;
         console.log(state.error);
       })
       .addCase(logout.fulfilled, (state, action) => {

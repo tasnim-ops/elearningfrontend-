@@ -49,13 +49,16 @@ const NavBarLog = () => {
     setAnchorElUser(event.currentTarget);
   };
   const handleOfUserMenu = (linkto) => {
-    console.log("Handling user menu:", linkto);
+    //console.log("Handling user menu:", linkto);
     handleCloseUserMenu();
     navigate(linkto);
   };
 
   const handleOfNavMenu = (linkto) => {
-    console.log("Handling nav menu:", linkto);
+    //console.log("Handling nav menu:", linkto);
+    if ((linkto = "/")) {
+      dispatch(logout());
+    }
     handleCloseNavMenu();
     navigate(linkto);
   };
@@ -173,7 +176,7 @@ const NavBarLog = () => {
             </Box>
             <Box sx={{ flexGrow: 0 }}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={user.photo} />
+                <Avatar alt="Remy Sharp" src={user && user.photo} />
               </IconButton>
               <Menu
                 sx={{ mt: "45px" }}

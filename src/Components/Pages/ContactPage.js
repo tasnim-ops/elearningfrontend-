@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { TextField, Button, Typography, Grid, Box, Alert } from "@mui/material";
+import { TextField, Button, Typography, Grid, Box } from "@mui/material";
+import { Alert } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { sendContact } from "../../features/contactSlice";
 const ContactPage = () => {
   const { user } = useSelector((state) => state.auth);
+  const { success } = useSelector((state) => state.contact);
+  //console.log("test hear success", success);
   const [firstname, setFirstName] = useState(user?.firstname || "");
   const [lastname, setLastName] = useState(user?.lastname || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -17,15 +20,32 @@ const ContactPage = () => {
     e.preventDefault();
     e.stopPropagation();
     const form = e.currentTarget;
+    //console.log(form.firstname);
     const userMessage = {
-      firstname: user?.firstname || "",
-      lastname: user?.lastname || "",
-      email: user?.email || "",
+      firstname: user?.firstname || firstname,
+
+      lastname: user?.lastname || lastname,
+      email: user?.email || email,
       message,
     };
     dispatch(sendContact(userMessage));
     setMessage("");
   };
+
+  useEffect(() => {
+    if (success === true) {
+      //console.log(success);
+      setShowAddSuccessAlert(true);
+      setTimeout(() => {
+        setShowAddSuccessAlert(false);
+      }, 2000); // Show the add success alert for 2 seconds
+    } else if (success === false) {
+      setShowAddErrorAlert(true);
+      setTimeout(() => {
+        setShowAddErrorAlert(false);
+      }, 2000); // Show the add error alert for 2 seconds
+    }
+  }, [success]);
   return (
     <div>
       <Box sx={{ height: "100vh" }}>
@@ -97,6 +117,19 @@ const ContactPage = () => {
                       multiline
                       rows={4}
                     />
+                    {/* Send message Success Alert */}
+                    {showAddSuccessAlert && (
+                      <Alert variant="success" className="mt-3">
+                        Added with success
+                      </Alert>
+                    )}
+
+                    {/* Send message Error Alert */}
+                    {showAddErrorAlert && (
+                      <Alert variant="danger" className="mt-3">
+                        Error! cann not send your message
+                      </Alert>
+                    )}
                     <Button
                       variant="contained"
                       style={{ backgroundColor: "#2a969c" }}
@@ -108,19 +141,6 @@ const ContactPage = () => {
                   </Grid>
                 </Grid>
               </form>
-              {/* Send message Success Alert */}
-              {showAddSuccessAlert && (
-                <Alert variant="success" className="mt-3">
-                  Added with success
-                </Alert>
-              )}
-
-              {/* Send message Error Alert */}
-              {showAddErrorAlert && (
-                <Alert variant="danger" className="mt-3">
-                  Error! cann not send your message
-                </Alert>
-              )}
             </Box>
           </Grid>
         </Grid>

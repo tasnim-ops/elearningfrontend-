@@ -10,20 +10,24 @@ const AdminSignin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, isLoggedIn } = useSelector((state) => state.auth);
-
+  console.log(isLoggedIn);
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     data.append("role", role);
     dispatch(login(data));
+    if (isLoggedIn) {
+      console.log("is loagged in", isLoggedIn);
+      navigate("/dash");
+      //dispatch(reset());
+    }
   };
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate("/dash");
-      dispatch(reset());
-    }
-  }, [isLoggedIn, navigate, dispatch]);
+  if (isLoggedIn) {
+    console.log("is loagged in", isLoggedIn);
+    navigate("/dash");
+    //dispatch(reset());
+  }
 
   return (
     <div>

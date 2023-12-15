@@ -3,6 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Category from "./Components/Elearning/Category";
 import AddCategory from "./Components/Elearning/AddCategory";
+import Courses from "./Components/Elearning/Courses";
+
 import AddCourse from "./Components/Elearning/AddCourse";
 import EditCourse from "./Components/Elearning/EditCourse";
 import AdminRegister from "./Components/Admin/AdminRegister";
@@ -20,20 +22,28 @@ import NavBarWel from "./Components/Pages/NavBarWel";
 import Register from "./Components/Authentification/Register";
 import Signin from "./Components/Authentification/Signin";
 import { Teachers } from "./Components/Profile/Teachers";
+import Conferences from "./Components/Pages/Conferences";
+//import AdminDashboard from "./Components/Admin/AdminDashboard";
+//import Admintester from "./Components/Admin/DashBoard";
 
 function App() {
   const { isLoggedIn, role, user } = useSelector((state) => state.auth);
 
   return (
     <>
-      {isLoggedIn ? <NavBarLog user={user} /> : <NavBarWel />}
-
+      {isLoggedIn === true ? <NavBarLog /> : <NavBarWel />}
       <Routes>
         <Route path="user/register" exact element={<Register />} />
         <Route path="user/login" exact element={<Signin />} />
         <Route path="/addcateg" exact element={<AddCategory />} />
-        <Route path="/addcourse" exact element={<AddCourse />} />
-        <Route path="/editcourse" exact element={<EditCourse />} />
+        <Route
+          path="/course"
+          exact
+          element={
+            role === "admin" || role === "teacher" ? <AddCourse /> : <Courses />
+          }
+        />{" "}
+        <Route path="/course/:categoryId" element={<Courses />} />
         <Route path="/categ" exact element={<Category />} />
         <Route path="/admin/register" exact element={<AdminRegister />} />
         <Route path="/admin/login" exact element={<AdminSignin />} />
@@ -44,7 +54,8 @@ function App() {
         <Route path="/teachers" exact element={<Teachers />} />
         <Route path="/" exact element={<HomePage />} />
         <Route path="/show-course/:courseId" element={<ShowCourses />} />
-        <Route path="/dash" element={<DashBoard />} />
+        <Route path="/dash" exact element={<DashBoard />} />
+        <Route path="/creacteconf" exact element={<Conferences />} />
       </Routes>
     </>
   );
