@@ -64,24 +64,8 @@ const Conferences = () => {
   const [confdate, setConfdate] = useState("");
   const [conftime, setConftime] = useState("");
   const [duration, setDuration] = useState("");
-  const [participants, setParticipants] = useState([""]);
-  const message = [
-    { label: "You have a conference titled by : ", value: title },
-    { label: "on : ", value: confdate },
-    { label: "at : ", value: conftime },
-    { label: "Animated by : ", value: user.firstname },
-    { label: "Duration : ", value: duration },
-  ];
-  const handleSend = (e) => {
-    const userMessage = {
-      firstname: user?.firstname,
+  const [participants, setParticipants] = useState([]);
 
-      lastname: user?.lastname,
-      email: user?.email,
-      message,
-    };
-    dispatch(sendConference(userMessage));
-  };
   const handleCreacteConference = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -109,7 +93,7 @@ const Conferences = () => {
       console.log("Teacher_id:", formData.get("teacher_id"));
 
       dispatch(createConference(formData));
-      dispatch(sendConference(message));
+      dispatch(sendConference());
     }
   };
   function ProLabel({ children }) {

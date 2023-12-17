@@ -175,7 +175,7 @@ export const conferenceSlice = createSlice({
         state.success = null;
       })
       .addCase(sendConference.fulfilled, (state, action) => {
-        state.contact.push(action.payload);
+        state.conferences.push(action.payload);
         state.isLoading = false;
         state.error = null;
         state.success = true;
