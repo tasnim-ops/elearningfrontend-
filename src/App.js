@@ -23,6 +23,8 @@ import Register from "./Components/Authentification/Register";
 import Signin from "./Components/Authentification/Signin";
 import { Teachers } from "./Components/Profile/Teachers";
 import Conferences from "./Components/Pages/Conferences";
+import ConferencePage from "./Components/Conferences/ConferencePage";
+import MeetingView from "./Components/Conferences/MeetingView";
 //import AdminDashboard from "./Components/Admin/AdminDashboard";
 //import Admintester from "./Components/Admin/DashBoard";
 
@@ -56,6 +58,13 @@ function App() {
         <Route path="/show-course/:courseId" element={<ShowCourses />} />
         <Route path="/dash" exact element={<DashBoard />} />
         <Route path="/creacteconf" exact element={<Conferences />} />
+        <Route path="/confpage" exact element={<ConferencePage />} />
+        <Route
+          path="/
+        "
+          exact
+          element={<MeetingView />}
+        />
       </Routes>
     </>
   );
